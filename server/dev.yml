@@ -1,0 +1,5 @@
+up:
+  - ruby: 2.7.2
+  - node:
+      version: v16.9.1
+      yarn: 1.22.5
