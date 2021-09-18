@@ -9,13 +9,15 @@ interface ProfileInput {
   name: string;
   yearOfBirth: number;
   interests: string[];
+  avatarSeed: string;
 }
 
 const UserDetails: NextPage = () => {
   const [input, setInput] = useState<ProfileInput>({
     name: '',
     yearOfBirth: 2021,
-    interests: []
+    interests: [],
+    avatarSeed: 'hello'
   });
 
   const interestsOnChange = (e: any) => {
@@ -23,11 +25,36 @@ const UserDetails: NextPage = () => {
     setInput({ ...input, interests: e });
   };
 
+  const randomizeAvatar = () => {
+    const seed = (Math.random() + 1).toString(36).substring(2);
+    setInput({ ...input, avatarSeed: seed });
+  };
+
   return (
     <Layout title="Details">
       <Title style={{ textAlign: 'center' }}>Profile</Title>
       <Card>
-        <Image src={NoProfileSrc} />
+        <div style={{ position: 'relative' }}>
+          <div>
+            <ProfileImage
+              src={`https://avatars.dicebear.com/api/avataaars/${input.avatarSeed}.svg`}
+              onClick={randomizeAvatar}
+            />
+            <RefreshIcon
+              src="http://simpleicon.com/wp-content/uploads/refresh.svg"
+              alt="refresh"
+            />
+          </div>
+        </div>
+        <p
+          style={{
+            color: '#696969',
+            fontSize: '11px',
+            textAlign: 'center'
+          }}
+        >
+          Click the icon to randomize an avatar
+        </p>
         <form>
           <div>
             <label htmlFor="name">
@@ -80,9 +107,6 @@ const UserDetails: NextPage = () => {
   );
 };
 
-const NoProfileSrc =
-  'https://cdn.iconscout.com/icon/free/png-256/account-avatar-profile-human-man-user-30448.png';
-
 const Title = styled.h1`
   text-align: 'center';
   margin-bottom: '1em';
@@ -95,10 +119,20 @@ const Card = styled.div`
   ${tw`px-4 py-3 bg-white border rounded-lg items-center`}
 `;
 
-const Image = styled.img`
+const ProfileImage = styled.img`
   display: block;
   margin: 0 auto 1em auto;
   ${tw`rounded-full h-24 w-24 border flex items-center justify-center`};
+  &:hover {
+    border: 1px solid #72bc59;
+  }
+`;
+
+const RefreshIcon = styled.img`
+  position: absolute;
+  top: 75%;
+  left: 52%;
+  width: 2em;
 `;
 
 const hoverStyles = css`
@@ -111,7 +145,7 @@ const hoverStyles = css`
 const btnStyles = css`
   display: inline-block;
   padding: 0.3em 1.2em;
-  margin: 0.3em 0.3em 0.3em 0;
+  margin: 0.5em 0.3em 0 0;
   border-radius: 2em;
   box-sizing: border-box;
   text-decoration: none;
