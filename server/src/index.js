@@ -4,10 +4,15 @@ import express from 'express'
 import http from 'http';
 import { categorize } from './Azure.js';
 import { Server } from "socket.io";
+import cors from 'cors';
 
 // database
 const phoneCodes = {};
+const db = {
+  users: {}
+};
 
+let nextUserID = 0;
 // express
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -21,6 +26,7 @@ const io = new Server(server, {
  }
 });
 
+app.use(cors());
 
 dotenv.config();
 
@@ -92,9 +98,30 @@ app.post('/login', (req, res) => {
 });
 
 /**
+ * Route to create user
+ */
+app.post('/user/create', (req, res) => { 
+  if (!req.body.name || !req.body.yearOfBirth || !req.body.interests.length === 0 || !req.body.avatarSeed) {
+    res.status(400).send("Input fields missing");
+    return;
+  }
+
+  const user = {
+    name: req.body.name,
+    yearOfBirth: req.body.yearOfBirth,
+    interests: req.body.interests,
+    avatarSeed: req.body.avatarSeed
+  }
+
+  db.users[nextUserID] = user;
+  nextUserID++;
+  res.sendStatus(200);
+});
+
+/**
  * Route to update user details
  */
-app.post('/user/details', authenticate, (req, res) => {
+app.post('/user/update', authenticate, (req, res) => {
 
 });
 
@@ -123,9 +150,8 @@ app.get('/buds', authenticate, (req, res) => {
 /**
  * Route to get details for a user's specific bud
  */
-app.get('/buds/:id', authenticate, (req, res) => {
+app.get('/buds/:id', authenticate, (req, res) => {});
 
-});
 
 server.listen(process.env.PORT, () => {
   console.log(`listening on *:${process.env.PORT}`);

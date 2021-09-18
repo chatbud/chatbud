@@ -4,6 +4,7 @@ import tw, { css, styled } from 'twin.macro';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 
 interface ProfileInput {
   name: string;
@@ -20,6 +21,7 @@ const UserDetails: NextPage = () => {
     avatarSeed: 'hello'
   });
   const [error, setError] = useState<boolean>(false);
+  const router = useRouter();
 
   const interestsOnChange = (e: any) => {
     if (input.interests.length > 5) return;
@@ -28,9 +30,22 @@ const UserDetails: NextPage = () => {
 
   const saveProfile = () => {
     setError(false);
-    if (!input.name || !input.yearOfBirth || input.interests.length === 0) {
-      setError(true);
-    }
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input)
+    };
+
+    fetch('http://localhost:5000/user/create', requestOptions).then(
+      (response) => {
+        if (!response.ok) {
+          setError(true);
+        } else {
+          router.push('/home');
+        }
+      }
+    );
   };
 
   const errorBanner = error && (
@@ -41,7 +56,9 @@ const UserDetails: NextPage = () => {
       role="alert"
     >
       <strong className="font-bold">Oops! </strong>
-      <span className="block sm:inline">Please fill out all fields.</span>
+      <span className="block sm:inline">
+        A problem occurred saving your profile.
+      </span>
     </div>
   );
 
