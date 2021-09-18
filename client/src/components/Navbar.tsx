@@ -8,7 +8,7 @@ const Navbar = () => {
   return (
     <Container>
       <Wrapper>
-        <Link href="/" passHref>
+        <Link href="/home" passHref>
           <Title>
             <Image width={128} height={36} src={logoSrc} alt="chatbug logo" />
           </Title>
