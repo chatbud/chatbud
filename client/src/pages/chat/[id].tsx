@@ -57,13 +57,13 @@ const BudsPage: NextPage = (props) => {
             <Message you={name === 'Dev'} msg={msg} name={name} image={image} />
           ))}
           <div>
-            <input
+            <Input
               value={typing}
               onChange={(val) => {
                 setTyping(val.target.value);
               }}
             />
-            <button
+            <Button
               disabled={!typing}
               onClick={() => {
                 console.log(typing);
@@ -72,7 +72,7 @@ const BudsPage: NextPage = (props) => {
               type="button"
             >
               Send
-            </button>
+            </Button>
           </div>
         </Content>
       </Container>
@@ -80,6 +80,13 @@ const BudsPage: NextPage = (props) => {
   );
 };
 
+const Button = styled.button`
+  ${tw`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+`;
+
+const Input = styled.input`
+  ${tw`bg-gray-200 border-gray-200 border-b-2 border-blue-500 focus:border-blue-700 focus:outline-none focus:bg-white focus:border-blue-700 text-gray-700 py-2 px-4 rounded`}
+`;
 const Container = styled.main`
   ${tw`flex flex-col space-y-4 p-4`}
 `;
