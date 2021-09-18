@@ -9,7 +9,7 @@ interface MessageProps {
   you: boolean;
 }
 
-const BudCard: React.FC<MessageProps> = ({ msg, name, image, you }) => {
+const Message: React.FC<MessageProps> = ({ msg, name, image, you }) => {
   const MsgContainer = you ? YouContainer : Container;
   return (
     <MsgContainer>
@@ -42,4 +42,4 @@ const Name = styled.span(({ you }: { you: boolean }) => [
   you ? tw`text-white` : 'text-gray-600'
 ]);
 
-export default BudCard;
+export default Message;
