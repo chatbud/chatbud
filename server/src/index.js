@@ -1,10 +1,10 @@
 
 import dotenv from 'dotenv';
-import { Syncrosse } from '@syncrosse/server'
 import express from 'express'
 import http from 'http';
 import bodyParser from 'body-parser';
 import { categorize } from './Azure.js';
+import { Server } from "socket.io";
 
 // database
 const phoneCodes = {};
@@ -14,18 +14,29 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 const server = http.createServer(app);
-
-// sockets
-const syncrosse = new Syncrosse(server);
-dotenv.config();
-
-syncrosse.onAction('ping', ({ user, data, lobby }) => {
-  lobby.triggerEvent('pong', data);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+   credentials: true
+ }
 });
 
-syncrosse.start();
 
-categorize('animal crossing').then((traits) => console.log(traits));
+dotenv.config();
+
+// categorize('animal crossing').then((traits) => console.log(traits));
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('joinRoom', (room) => {
+    socket.join(room)
+  })
+  socket.on('chat', ({room, msg, name}) => {
+    io.to(room).emit('chat', {msg, name});
+  })
+});
+
 
 app.post('/login', (req, res) => {
   const { phone_number } = req.body;
