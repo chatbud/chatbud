@@ -12,7 +12,7 @@ const Layout: React.FunctionComponent<Props> = ({
   title = 'This is the default title',
   children
 }) => (
-  <div>
+  <>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
@@ -30,7 +30,7 @@ const Layout: React.FunctionComponent<Props> = ({
     </Head>
     <Navbar />
     {children}
-  </div>
+  </>
 );
 
 export default Layout;
