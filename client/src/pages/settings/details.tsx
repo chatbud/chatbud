@@ -24,16 +24,15 @@ const UserDetails: NextPage = () => {
   };
 
   return (
-    <Layout title="ChatBud | Profile">
+    <Layout title="Details">
+      <Title style={{ textAlign: 'center' }}>Profile</Title>
       <Card>
-        <Title style={{ textAlign: 'center', marginBottom: '1em' }}>
-          Create your profile
-        </Title>
         <Image src={NoProfileSrc} />
         <form>
           <div>
             <label htmlFor="name">
               Name:
+              <br />
               <input
                 name="name"
                 css={[tw`border`, hoverStyles]}
@@ -42,8 +41,10 @@ const UserDetails: NextPage = () => {
                 }}
               />
             </label>
+            <br />
             <label htmlFor="year">
               Year of Birth:
+              <br />
               <input
                 name="year"
                 type="number"
@@ -89,10 +90,8 @@ const Title = styled.h1`
 `;
 
 const Card = styled.div`
-  border-radius: 10px;
-  padding: 1em 1em 0.3em 1em;
   overflow: hidden;
-  margin: 2em;
+  margin: 0.5em;
   ${tw`px-4 py-3 bg-white border rounded-lg items-center`}
 `;
 
