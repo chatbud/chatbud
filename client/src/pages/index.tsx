@@ -48,18 +48,16 @@ const IndexPage: NextPage = () => {
     setValidationMessage(isAuthorized ? '' : 'Invalid code! Try again');
     if (isAuthorized) {
       setIsAuthed(true);
-      return;
     }
   };
 
   const onJoinPress = () => {
     if (!render2FA) {
-      setValidationMessage(!!phoneNumber.length ? '' : 'Enter a phone number');
+      setValidationMessage(phoneNumber.length ? '' : 'Enter a phone number');
       if (phoneNumber.length) {
         // NOTE: Maybe only set this to true when Twilio lets us know it's a valid phone #?
         // NOTE: We could have a loading phase
         setRender2FA(true);
-        return;
       }
     } else {
       if (twoFactorCode.length) {
@@ -83,14 +81,15 @@ const IndexPage: NextPage = () => {
           ariaHideApp={false}
         >
           <>
-            <Title> Join!</Title>
-            <label htmlFor="Enter Phone #"> Phone Number: </label>
+            <Title>Join!</Title>
+            <label htmlFor="Enter Phone #">Phone Number: </label>
             <StyledInput
               name="Phone Number"
               value={phoneNumber}
               onInput={(e: HTMLInputEvent) => onPhoneInput(e.target.value)}
               marginBot={10}
             />
+            <br />
             {render2FA && (
               <>
                 <label htmlFor="Enter Code">
@@ -108,7 +107,17 @@ const IndexPage: NextPage = () => {
             )}
             <StyledButton onClick={onJoinPress}>Join!</StyledButton>
             <br />
-            {validationMessage}
+            {validationMessage && (
+              <div
+                css={[
+                  tw`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mt-4`
+                ]}
+                role="alert"
+              >
+                <strong className="font-bold">Oops! </strong>
+                <span className="block sm:inline">{validationMessage}</span>
+              </div>
+            )}
           </>
         </Modal>
         <StyledButton onClick={() => !renderLogin && setRenderLogin(true)}>
@@ -149,5 +158,5 @@ const linkStyles: Record<string, TwStyle> = {
 const StyledInput = styled.input`
   border: 1px solid green;
   border-radius: 5px;
-  ${({ marginBot }) => `margin-bottom: ${marginBot ? marginBot : 0}px`}
+  ${({ marginBot }) => `margin-bottom: ${marginBot || 0}px`}
 `;
