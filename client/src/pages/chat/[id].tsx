@@ -6,11 +6,29 @@ import Layout from '@/components/Layout';
 import BudCard from '@/components/BudCard';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/dist/client/router';
+import Message from '@/components/Message';
 
 const mockData = [
-  { name: 'Kooky Kat', msg: 'Hey' },
-  { name: 'Dev', msg: 'Hey' },
-  { name: 'Dev', msg: "What's up" }
+  {
+    name: 'Kooky Kat',
+    msg: 'Hey',
+    image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
+  },
+  {
+    name: 'Dev',
+    msg: 'Hey',
+    image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
+  },
+  {
+    name: 'Dev',
+    msg: "What's up",
+    image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
+  },
+  {
+    name: 'Kooky Kat',
+    msg: 'Not much hbu',
+    image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
+  }
 ];
 
 const BudsPage: NextPage = (props) => {
@@ -35,10 +53,8 @@ const BudsPage: NextPage = (props) => {
       <Container>
         <Title>Kooky Kat 🌱</Title>
         <Content>
-          {messages.map(({ name, msg }, id) => (
-            <div key={`chat-${msg}-${id}`}>
-              <p>{msg}</p>
-            </div>
+          {messages.map(({ name, msg, image }, id) => (
+            <Message you={name === 'Dev'} msg={msg} name={name} image={image} />
           ))}
           <div>
             <input
