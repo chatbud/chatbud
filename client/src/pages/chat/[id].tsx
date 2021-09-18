@@ -54,7 +54,13 @@ const BudsPage: NextPage = (props) => {
         <Title>Kooky Kat 🌱</Title>
         <Content>
           {messages.map(({ name, msg, image }, id) => (
-            <Message you={name === 'Dev'} msg={msg} name={name} image={image} />
+            <Message
+              key={`${name}-${id}`}
+              you={name === 'Dev'}
+              msg={msg}
+              name={name}
+              image={image}
+            />
           ))}
           <div>
             <Input
