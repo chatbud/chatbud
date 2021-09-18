@@ -10,7 +10,7 @@ interface BudCardProps {
 
 const BudCard: React.FC<BudCardProps> = ({ id, name, image }) => {
   return (
-    <Link href={`/chat/${id}`} passHref>
+    <Link href={`/buds/${id}`} passHref>
       <Container>
         {image ? (
           <Image src={image} alt="profile photo" />

@@ -15,7 +15,7 @@ const Navbar = () => {
         </Link>
         <Buttons>
           <Link href="/home">Home</Link>
-          <Link href="/chat">Chat</Link>
+          <Link href="/buds">Buds</Link>
           <Link href="/settings">Settings</Link>
         </Buttons>
       </Wrapper>
