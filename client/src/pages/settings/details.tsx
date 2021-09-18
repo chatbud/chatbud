@@ -19,11 +19,31 @@ const UserDetails: NextPage = () => {
     interests: [],
     avatarSeed: 'hello'
   });
+  const [error, setError] = useState<boolean>(false);
 
   const interestsOnChange = (e: any) => {
     if (input.interests.length > 5) return;
     setInput({ ...input, interests: e });
   };
+
+  const saveProfile = () => {
+    setError(false);
+    if (!input.name || !input.yearOfBirth || input.interests.length === 0) {
+      setError(true);
+    }
+  };
+
+  const errorBanner = error && (
+    <div
+      css={[
+        tw`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4`
+      ]}
+      role="alert"
+    >
+      <strong className="font-bold">Oops! </strong>
+      <span className="block sm:inline">Please fill out all fields.</span>
+    </div>
+  );
 
   const randomizeAvatar = () => {
     const seed = (Math.random() + 1).toString(36).substring(2);
@@ -34,6 +54,7 @@ const UserDetails: NextPage = () => {
     <Layout title="Details">
       <Title style={{ textAlign: 'center' }}>Profile</Title>
       <Card>
+        {errorBanner}
         <div style={{ position: 'relative' }}>
           <div>
             <ProfileImage
@@ -95,9 +116,7 @@ const UserDetails: NextPage = () => {
           <button
             type="button"
             css={[tw`border`, btnStyles]}
-            disabled={
-              !input.name || !input.yearOfBirth || input.interests.length === 0
-            }
+            onClick={saveProfile}
           >
             Save
           </button>
