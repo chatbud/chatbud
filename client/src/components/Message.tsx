@@ -24,11 +24,11 @@ const BudCard: React.FC<MessageProps> = ({ msg, name, image, you }) => {
 };
 
 const Container = styled.a`
-  ${tw`px-4 py-3 bg-white border bg-blue-100 rounded-lg flex flex-row items-center`}
+  ${tw`px-4 py-3 bg-white border bg-blue-100 rounded-lg flex flex-row items-center hover:bg-blue-200`}
 `;
 
 const YouContainer = styled.a`
-  ${tw`px-4 py-3 bg-white border bg-green-500 rounded-lg flex flex-row-reverse items-center`}
+  ${tw`px-4 py-3 bg-white border bg-green-500 rounded-lg flex flex-row-reverse items-center hover:bg-green-600`}
 `;
 
 const Image = styled.img`
