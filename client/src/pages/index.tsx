@@ -71,7 +71,7 @@ const IndexPage: NextPage = () => {
   };
 
   return (
-    <Layout title="ChatBud - Grow with friends!">
+    <Layout title="ChatBud - Grow with friends!" noNavbar={!isAuthed}>
       <Container>
         <Title>ChatBud</Title>
         Yeah we make friends n shit

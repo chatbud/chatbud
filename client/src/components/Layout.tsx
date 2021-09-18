@@ -6,11 +6,13 @@ import Navbar from './Navbar';
 type Props = {
   title?: string;
   children?: React.ReactNode;
+  noNavbar?: boolean;
 };
 
 const Layout: React.FunctionComponent<Props> = ({
   title = 'This is the default title',
-  children
+  children,
+  noNavbar
 }) => (
   <>
     <Head>
@@ -28,7 +30,7 @@ const Layout: React.FunctionComponent<Props> = ({
         rel="stylesheet"
       />
     </Head>
-    <Navbar />
+    {!noNavbar && <Navbar />}
     {children}
   </>
 );
