@@ -10,7 +10,7 @@ import PlantSrc1 from '@/assets/level1.png';
 
 const HomePage: NextPage = () => {
   return (
-    <Layout title="ChatBud | Home">
+    <Layout title="Home">
       <Container>
         <Title>Welcome 😊</Title>
         <Content>
