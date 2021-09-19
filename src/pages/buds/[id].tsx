@@ -24,7 +24,7 @@ const BudsPage: NextPage = () => {
 
   useEffect(() => {
     if (!room) return;
-    const socket = io('http://localhost:5000');
+    const socket = io();
     socket.emit('joinRoom', room);
     setChat(socket);
     socket.on('chat', (msg) => {
