@@ -4,6 +4,14 @@ import http from "http";
 import { categorize } from "./Azure.js";
 import { Server } from "socket.io";
 import cors from "cors";
+import twilio from 'twilio';
+dotenv.config();
+
+// twilio
+const twilioSID = process.env.TWILIO_SID;
+const twilioToken = process.env.TWILIO_TOKEN;
+const twilioPhoneNumber = process.env.TWILIO_NUMBER;
+const twilioClient = twilio(twilioSID, twilioToken);
 
 // database
 const phoneCodes = {};
@@ -51,8 +59,6 @@ const io = new Server(server, {
 
 app.use(cors());
 
-dotenv.config();
-
 // categorize('animal crossing').then((traits) => console.log(traits));
 
 io.on("connection", (socket) => {
@@ -79,7 +85,12 @@ const authenticate = (req, res, next) => {
 };
 
 const generatePhoneCode = (phoneNumber) => {
-  const code = Math.floor(Math.random() * 9000) + 1000;
+  const code = Math.floor(Math.random() * 900000) + 100000;
+  twilioClient.messages.create({
+    body: `Your ChatBud authentication code is ${code}`,
+    from: twilioPhoneNumber,
+    to: phoneNumber
+  });
   phoneCodes[phoneNumber] = code;
 };
 
@@ -90,7 +101,7 @@ const generatePhoneCode = (phoneNumber) => {
 app.post("/login", (req, res) => {
   const { phone_number, code } = req.body;
   if (!phone_number) {
-    req.sendStatus(400);
+    res.status(400).send('Missing phone number');
     return;
   }
 
@@ -98,12 +109,12 @@ app.post("/login", (req, res) => {
   if (!phoneCodes.hasOwnProperty(phone_number)) {
     // twilio api call
     generatePhoneCode(phone_number);
-    res.sendStatus(401);
+    res.status(200).json({ next_step: 'code' });
     return;
   }
 
   if (!code) {
-    req.sendStatus(400);
+    res.status(400).send('Missing code');
     return;
   }
   // send 200 if code matches, else 401
@@ -112,11 +123,11 @@ app.post("/login", (req, res) => {
     // if not, redirect to /details
     const id = req.header("User-Id");
     if (db.users.hasOwnProperty(id)) {
-      res.status.json({ redirect: "/home" });
+      res.status(200).json({ redirect: "/home" });
     } else {
       // !TODO: create user entry
       // db.users[someNewID] = { phone_number };
-      res.status.json({ redirect: "/details" });
+      res.status(200).json({ redirect: "/details" });
     }
   } else {
     res.sendStatus(401);
