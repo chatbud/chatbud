@@ -20,7 +20,7 @@ const HomePage: NextPage = () => {
         <Button
           onClick={async () => {
             const json = await (
-              await fetch('http://localhost:5000/matchmake', {
+              await fetch('/matchmake', {
                 method: 'POST',
                 headers: { 'User-Id': window.localStorage.getItem('userId')! }
               })

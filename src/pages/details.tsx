@@ -41,17 +41,15 @@ const UserDetails: NextPage = () => {
       body: JSON.stringify(input)
     };
 
-    fetch('http://localhost:5000/user/create', requestOptions).then(
-      (response) => {
-        if (!response.ok) {
-          setError(true);
-        } else {
-          setUserSeed(input.avatarSeed);
-          response.json().then((data) => setUserId(data.id));
-          router.push('/home');
-        }
+    fetch('/user/create', requestOptions).then((response) => {
+      if (!response.ok) {
+        setError(true);
+      } else {
+        setUserSeed(input.avatarSeed);
+        response.json().then((data) => setUserId(data.id));
+        router.push('/home');
       }
-    );
+    });
   };
 
   const errorBanner = error && (

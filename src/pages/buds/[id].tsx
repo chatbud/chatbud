@@ -24,14 +24,14 @@ const BudsPage: NextPage = () => {
 
   useEffect(() => {
     if (!room) return;
-    const socket = io('http://localhost:5000');
+    const socket = io();
     socket.emit('joinRoom', room);
     setChat(socket);
     socket.on('chat', (msg) => {
       setMessages((msgs) => [...msgs, msg]);
     });
 
-    fetch(`http://localhost:5000/buds/${room}`).then((res) => {
+    fetch(`/buds/${room}`).then((res) => {
       res.json().then((data) => {
         setMessages(data.msgs);
         const members = data.users;
