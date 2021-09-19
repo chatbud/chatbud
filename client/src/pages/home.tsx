@@ -2,11 +2,9 @@ import React from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
 import Link from 'next/link';
-import Image from 'next/image';
 
 import Layout from '@/components/Layout';
-
-import PlantSrc1 from '@/assets/level1.png';
+import Plant from '@/components/Plant';
 
 const HomePage: NextPage = () => {
   return (
@@ -15,7 +13,7 @@ const HomePage: NextPage = () => {
         <Title>Welcome 😊</Title>
         <Content>
           <Aside>Good Job!</Aside>
-          <Image width={140} height={300} src={PlantSrc1} alt="Plant" />
+          <Plant progress={0.1} />
           <Aside>+90% growth since yesterday!</Aside>
         </Content>
         <Link href="/buds/1" passHref>
