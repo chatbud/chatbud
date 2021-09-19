@@ -147,8 +147,6 @@ app.post("/login", (req, res) => {
     if (db.users.hasOwnProperty(id)) {
       res.status(200).json({ redirect: "/home" });
     } else {
-      // !TODO: create user entry
-      // db.users[someNewID] = { phone_number };
       res.status(200).json({ redirect: "/details" });
     }
   } else {
@@ -179,7 +177,7 @@ app.post("/user/create", (req, res) => {
 
   db.users[nextUserID] = user;
   nextUserID++;
-  res.sendStatus(200);
+  res.status(200).json({ id: nextUserID - 1 });
 });
 
 /**
