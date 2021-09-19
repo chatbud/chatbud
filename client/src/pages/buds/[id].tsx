@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
 
 import Layout from '@/components/Layout';
-import BudCard from '@/components/BudCard';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/dist/client/router';
 import Message from '@/components/Message';
+import { getUserId } from '@/utils/functions';
 
-const BudsPage: NextPage = (props) => {
+const BudsPage: NextPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [typing, setTyping] = useState('');
   const [chat, setChat] = useState<any>(null);
@@ -16,6 +16,10 @@ const BudsPage: NextPage = (props) => {
   const router = useRouter();
   const room = router.query.id;
 
+  useEffect(()=> {
+    if (!getUserId()) router.push('/');
+  }, []);
+  
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [messages]);

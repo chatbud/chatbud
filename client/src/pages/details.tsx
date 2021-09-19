@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
@@ -6,7 +6,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 import Layout from '@/components/Layout';
-import { setUserId, setUserSeed } from '@/utils/functions';
+import { getUserId, setUserId, setUserSeed } from '@/utils/functions';
 
 interface ProfileInput {
   name: string;
@@ -24,6 +24,10 @@ const UserDetails: NextPage = () => {
   });
   const [error, setError] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(()=> {
+    if (!getUserId()) router.push('/');
+  }, []);
 
   const interestsOnChange = (e: any) => {
     if (input.interests.length > 5) return;
