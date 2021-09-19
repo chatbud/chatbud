@@ -35,7 +35,7 @@ const IndexPage: NextPage = () => {
   }, [isAuthed]);
 
   const onPhoneInput = (value: string) => {
-    if (/^(\+)(\d){1,15}$/.test(value)) {
+    if (/^(\+)(\d){0,15}|^$$/.test(value)) {
       setPhoneNumber(value);
     }
   };
