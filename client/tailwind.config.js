@@ -75,6 +75,8 @@ module.exports = {
       pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       bounce: 'bounce 1s infinite',
       wave: 'wave 3s infinite',
+      grow: 'grow 1s linear 1',
+      leafGrow: 'leafGrow 1s linear 1',
     },
     backdropBlur: (theme) => theme('blur'),
     backdropBrightness: (theme) => theme('brightness'),
@@ -498,7 +500,26 @@ module.exports = {
         '100%': {
           transform: 'rotateZ(3deg) translateZ(-1px)'
         },
-        
+      },
+      grow: {
+        '0%': {
+          bottom: '0%',
+          width: '1%'
+        },
+        '100%': {
+          bottom: '20%',
+          width: '2%'
+        }
+      },
+      leafGrow: {
+        '0%': {
+          width: '0%',
+          height: '0%'
+        },
+        '100%': {
+          width: '700%',
+          height: '10%'
+        }
       }
     },
     letterSpacing: {
