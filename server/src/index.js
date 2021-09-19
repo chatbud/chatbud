@@ -81,7 +81,7 @@ const io = new Server(server, {
 
 app.use(cors());
 
-categorize('animal crossing').then((traits) => console.log(traits));
+// categorize('animal crossing').then((traits) => console.log(traits));
 
 io.on("connection", (socket) => {
   console.log("a user connected");

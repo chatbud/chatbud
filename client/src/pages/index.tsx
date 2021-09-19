@@ -202,7 +202,7 @@ const IndexPage: NextPage = () => {
                       type="button"
                       onClick={onJoinPress}
                     >
-                      Send
+                      {!render2FA ? 'Send' : 'Submit'}
                     </button>
                   </div>
                 </div>
