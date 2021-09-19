@@ -167,7 +167,7 @@ const Title = styled.h1`
 `;
 
 const Content = styled.div`
-  ${tw`flex flex-col pb-24`}
+  ${tw`flex flex-col pb-48`}
 `;
 
 function myId() {
