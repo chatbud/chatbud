@@ -10,11 +10,11 @@ const HomePage: NextPage = () => {
   return (
     <Layout title="Home">
       <Container>
-        <Title>Welcome 😊</Title>
+        <Title>Welcome back! 😊</Title>
         <Content>
-          <Aside>Good Job!</Aside>
+          <AsideLeft>Great job yesterday</AsideLeft>
           <Plant progress={0.1} />
-          <Aside>+90% growth since yesterday!</Aside>
+          <AsideRight>+25% growth since you&apos;ve started</AsideRight>
         </Content>
         <Link href="/buds/1" passHref>
           <Button>Find a Bud</Button>
@@ -25,7 +25,7 @@ const HomePage: NextPage = () => {
 };
 
 const Container = styled.main`
-  ${tw`flex flex-col justify-center items-center space-y-8`}
+  ${tw`flex flex-col justify-center items-center space-y-4`}
 `;
 
 const Title = styled.h1`
@@ -33,15 +33,19 @@ const Title = styled.h1`
 `;
 
 const Content = styled.div`
-  ${tw`flex flex-col justify-center items-center`}
+  ${tw`flex flex-col md:grid md:grid-cols-3 justify-center items-center`}
 `;
 
-const Aside = styled.p`
-  ${tw`text-lg text-gray-600`}
+const AsideLeft = styled.p`
+  ${tw`text-lg text-gray-600 text-right`}
+`;
+
+const AsideRight = styled.p`
+  ${tw`text-lg text-gray-600 text-left mt-4 md:mt-0`}
 `;
 
 const Button = styled.a`
-  ${tw`px-3 py-1 border rounded-lg`}
+  ${tw`w-72 px-4 py-2 border rounded-lg bg-leaf text-white text-center font-semibold tracking-widest`}
 `;
 
 export default HomePage;

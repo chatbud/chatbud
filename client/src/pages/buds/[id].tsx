@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable react/no-array-index-key */
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
-
-import Layout from '@/components/Layout';
-import BudCard from '@/components/BudCard';
 import { io } from 'socket.io-client';
-import { useRouter } from 'next/dist/client/router';
-import Message from '@/components/Message';
 
-const BudsPage: NextPage = (props) => {
+import { useRouter } from 'next/dist/client/router';
+import Layout from '@/components/Layout';
+import Message from '@/components/Message';
+import { getUserId } from '@/utils/functions';
+
+const BudsPage: NextPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [typing, setTyping] = useState('');
   const [chat, setChat] = useState<any>(null);
@@ -33,7 +34,7 @@ const BudsPage: NextPage = (props) => {
       res.json().then((data) => {
         setMessages(data.msgs);
         const members = data.users;
-        if (members[0].id === myId()) {
+        if (members[0].id === Number(getUserId())) {
           setOther(members[1].name);
         } else {
           setOther(members[0].name);
@@ -43,20 +44,22 @@ const BudsPage: NextPage = (props) => {
   }, [room]);
 
   return (
-    <Layout title="Messages with Kooky Kat">
+    <Layout title={`Message with ${other}`}>
       <Container>
         <Title>{other} 🌱</Title>
         <Content>
-          {messages.map(({ id, msg, image }, index) => (
-            <Message
-              key={`${id}-${index}`}
-              you={id === myId()}
-              msg={msg}
-              id={id}
-              image={image}
-            />
-          ))}
-          <div>
+          <Messages>
+            {messages.map(({ id, msg, image }, index) => (
+              <Message
+                key={`${id}-${index}`}
+                you={id === Number(getUserId())}
+                msg={msg}
+                id={id}
+                image={image}
+              />
+            ))}
+          </Messages>
+          <InputContainer>
             <Input
               value={typing}
               onChange={(val) => {
@@ -67,7 +70,7 @@ const BudsPage: NextPage = (props) => {
                   chat.emit('chat', {
                     room,
                     msg: typing,
-                    id: myId()
+                    id: Number(getUserId())
                   });
                   setTyping('');
                 }
@@ -79,7 +82,7 @@ const BudsPage: NextPage = (props) => {
                 chat.emit('chat', {
                   room,
                   msg: typing,
-                  id: myId()
+                  id: Number(getUserId())
                 });
                 setTyping('');
               }}
@@ -87,7 +90,7 @@ const BudsPage: NextPage = (props) => {
             >
               Send
             </Button>
-          </div>
+          </InputContainer>
         </Content>
       </Container>
     </Layout>
@@ -98,11 +101,20 @@ const Button = styled.button`
   ${tw`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
 `;
 
-const Input = styled.input`
-  ${tw`bg-gray-200 border-gray-200 border-b-2 border-blue-500 focus:border-blue-700 focus:outline-none focus:bg-white focus:border-blue-700 text-gray-700 py-2 px-4 rounded`}
+const Messages = styled.div`
+  ${tw`flex flex-col space-y-2`}
 `;
+
+const Input = styled.input`
+  ${tw`bg-gray-200 border-b-2 border-blue-500 focus:outline-none focus:bg-gray-100 focus:border-blue-700 text-gray-700 py-2 px-4 rounded w-full`}
+`;
+
 const Container = styled.main`
-  ${tw`flex flex-col space-y-4 p-4 overflow-y-scroll`}
+  ${tw`flex flex-col space-y-4 p-4 max-w-2xl mx-auto`}
+`;
+
+const InputContainer = styled.div`
+  ${tw`flex flex-row space-x-4 fixed left-0 bottom-0 right-0 w-full p-4 bg-white border-t`}
 `;
 
 const Title = styled.h1`
@@ -110,11 +122,7 @@ const Title = styled.h1`
 `;
 
 const Content = styled.div`
-  ${tw`flex flex-col space-y-2`}
+  ${tw`flex flex-col pb-24`}
 `;
-
-function myId() {
-  return Number(window.localStorage.getItem('userId'));
-}
 
 export default BudsPage;

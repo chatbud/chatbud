@@ -88,53 +88,50 @@ const IndexPage: NextPage = () => {
   return (
     <Layout title="ChatBud - Grow with friends!" noNavbar={!isAuthed}>
       <Container>
-        <Title>
-          <Image src={logoSrc} />
-        </Title>
-        <Subtitle>Growing your network, one bud at a time</Subtitle>
+        <Content>
+          <ImageContainer>
+            <Image src={logoSrc} />
+          </ImageContainer>
+          <Subtitle>Growing your network, one bud at a time</Subtitle>
+          <button
+            type="button"
+            css={[
+              tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded`
+            ]}
+            onClick={() => !renderLogin && setRenderLogin(true)}
+          >
+            Become a ChatBud!
+          </button>
+        </Content>
         {renderLogin && (
           <>
-            <div
-              css={[
-                tw`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none m-3`
-              ]}
+            <button
+              tw="justify-center items-center flex w-full overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+              type="button"
               onClick={closeModal}
             >
-              <div
-                css={[tw`relative w-auto my-6 mx-auto max-w-3xl`]}
+              <button
+                tw="relative w-auto my-6 mx-auto max-w-3xl cursor-default"
+                type="button"
                 onClick={(e) => {
                   // do not close modal if anything inside modal content is clicked
                   e.stopPropagation();
                 }}
               >
-                <div
-                  css={[
-                    tw`border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none`
-                  ]}
-                >
-                  <div
-                    css={[
-                      tw`flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t`
-                    ]}
-                  >
-                    <h3 css={[tw`text-3xl font-semibold`]}>Join ChatBud🌱</h3>
+                <div tw="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                  <div tw="flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t">
+                    <h3 tw="text-3xl font-semibold">Join ChatBud🌱</h3>
                     <button
                       type="button"
-                      css={[
-                        tw`p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none`
-                      ]}
+                      tw="p-1 ml-auto float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                       onClick={closeModal}
                     >
-                      <span
-                        css={[
-                          tw`bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none`
-                        ]}
-                      >
+                      <span tw="h-6 w-6 text-2xl block outline-none focus:outline-none">
                         ×
                       </span>
                     </button>
                   </div>
-                  <div css={[tw`relative p-6 flex-auto`]}>
+                  <div tw="p-6 space-y-2">
                     {!render2FA ? (
                       <>
                         <p>
@@ -147,7 +144,6 @@ const IndexPage: NextPage = () => {
                           onInput={(e: HTMLInputEvent) =>
                             onPhoneInput(e.target.value)
                           }
-                          marginBot={10}
                         />
                       </>
                     ) : (
@@ -162,16 +158,12 @@ const IndexPage: NextPage = () => {
                           onInput={(e: HTMLInputEvent) =>
                             setTwoFactorCode(e.target.value)
                           }
-                          marginBot={10}
                         />
                       </>
                     )}
-                    <br />
                     {validationMessage && (
                       <div
-                        css={[
-                          tw`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4`
-                        ]}
+                        tw="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4"
                         role="alert"
                       >
                         <strong className="font-bold">Oops! </strong>
@@ -181,24 +173,16 @@ const IndexPage: NextPage = () => {
                       </div>
                     )}
                   </div>
-                  <div
-                    css={[
-                      tw`flex items-center justify-end p-6 border-t border-solid border-gray-200 rounded-b`
-                    ]}
-                  >
+                  <div tw="flex items-center justify-end p-6 border-t border-solid border-gray-200 rounded-b">
                     <button
-                      css={[
-                        tw`text-red-500 font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`
-                      ]}
+                      tw="text-red-500 font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                       onClick={closeModal}
                     >
                       Cancel
                     </button>
                     <button
-                      css={[
-                        tw`bg-leaf text-white active:bg-leaf-dark font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`
-                      ]}
+                      tw="bg-leaf text-white active:bg-leaf-dark font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                       onClick={onJoinPress}
                     >
@@ -206,20 +190,11 @@ const IndexPage: NextPage = () => {
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div css={[tw`opacity-25 fixed inset-0 z-40 bg-black`]} />
+              </button>
+            </button>
+            <div tw="opacity-25 fixed inset-0 z-40 bg-black" />
           </>
         )}
-        <button
-          type="button"
-          css={[
-            tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded`
-          ]}
-          onClick={() => !renderLogin && setRenderLogin(true)}
-        >
-          Become a ChatBud!
-        </button>
       </Container>
     </Layout>
   );
@@ -228,10 +203,14 @@ const IndexPage: NextPage = () => {
 export default IndexPage;
 
 const Container = styled.div`
-  ${tw`flex flex-col items-center space-y-4`}
+  ${tw`flex flex-col items-center`}
 `;
 
-const Title = styled.h1`
+const Content = styled.div`
+  ${tw`flex flex-col items-center space-y-8`}
+`;
+
+const ImageContainer = styled.h1`
   ${tw`px-12 py-4 max-w-md mt-8`}
 `;
 
@@ -240,7 +219,5 @@ const Subtitle = styled.h2`
 `;
 
 const StyledInput = styled.input`
-  border: 1px solid green;
-  border-radius: 5px;
-  ${({ marginBot }) => `margin-bottom: ${marginBot || 0}px`}
+  ${tw`px-2 py-1 rounded-lg text-sm border border-leaf-dark w-full`}
 `;

@@ -4,9 +4,11 @@ import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 import Layout from '@/components/Layout';
 import { setUserId, setUserSeed } from '@/utils/functions';
+import logoSrc from '@/assets/chatbud_logo.png';
 
 interface ProfileInput {
   name: string;
@@ -73,79 +75,92 @@ const UserDetails: NextPage = () => {
 
   return (
     <Layout title="Details" noNavbar>
-      <Title style={{ textAlign: 'center' }}>Profile</Title>
-      <Card>
-        {errorBanner}
-        <div style={{ position: 'relative' }}>
-          <div>
-            <ProfileImage
-              src={`https://avatars.dicebear.com/api/avataaars/${input.avatarSeed}.svg`}
-              onClick={randomizeAvatar}
-            />
-            <RefreshIcon
-              src="http://simpleicon.com/wp-content/uploads/refresh.svg"
-              alt="refresh"
-            />
-          </div>
-        </div>
-        <p
-          style={{
-            color: '#696969',
-            fontSize: '11px',
-            textAlign: 'center'
-          }}
-        >
-          Click the icon to randomize an avatar
-        </p>
-        <form>
-          <div>
-            <label htmlFor="name">
-              Name:
-              <br />
-              <input
-                name="name"
-                css={[tw`border`, hoverStyles]}
-                onChange={(e: any) => {
-                  setInput({ ...input, name: e.target.value });
-                }}
+      <ImageContainer>
+        <Image src={logoSrc} />
+      </ImageContainer>
+      <Container>
+        <Title style={{ textAlign: 'center' }}>Profile</Title>
+        <Card>
+          {errorBanner}
+          <div style={{ position: 'relative' }}>
+            <div>
+              <ProfileImage
+                src={`https://avatars.dicebear.com/api/avataaars/${input.avatarSeed}.svg`}
+                onClick={randomizeAvatar}
               />
-            </label>
-            <br />
-            <label htmlFor="year">
-              Year of Birth:
-              <br />
-              <input
-                name="year"
-                type="number"
-                css={[tw`border`, hoverStyles]}
-                onChange={(e: any) => {
-                  setInput({ ...input, yearOfBirth: e.target.value });
-                }}
+              <RefreshIcon
+                src="http://simpleicon.com/wp-content/uploads/refresh.svg"
+                alt="refresh"
               />
-            </label>
+            </div>
           </div>
-          Enter up to 5 interests:
-          <TagsInput
-            value={input.interests}
-            onChange={interestsOnChange}
-            inputProps={{
-              placeholder: input.interests.length < 5 && 'Add interest'
+          <p
+            style={{
+              color: '#696969',
+              fontSize: '11px',
+              textAlign: 'center'
             }}
-            maxTags={5}
-            onlyUnique
-          />
-          <button
-            type="button"
-            css={[tw`border`, btnStyles]}
-            onClick={saveProfile}
           >
-            Save
-          </button>
-        </form>
-      </Card>
+            Click the icon to randomize an avatar
+          </p>
+          <form>
+            <div>
+              <label htmlFor="name">
+                Name:
+                <br />
+                <input
+                  name="name"
+                  css={[tw`border`, hoverStyles]}
+                  onChange={(e: any) => {
+                    setInput({ ...input, name: e.target.value });
+                  }}
+                />
+              </label>
+              <br />
+              <label htmlFor="year">
+                Year of Birth:
+                <br />
+                <input
+                  name="year"
+                  type="number"
+                  css={[tw`border`, hoverStyles]}
+                  onChange={(e: any) => {
+                    setInput({ ...input, yearOfBirth: e.target.value });
+                  }}
+                />
+              </label>
+            </div>
+            Enter up to 5 interests:
+            <TagsInput
+              value={input.interests}
+              onChange={interestsOnChange}
+              inputProps={{
+                placeholder: input.interests.length < 5 && 'Add interest'
+              }}
+              maxTags={5}
+              onlyUnique
+            />
+            <button
+              type="button"
+              css={[tw`border`, btnStyles]}
+              onClick={saveProfile}
+            >
+              Save
+            </button>
+          </form>
+        </Card>
+      </Container>
     </Layout>
   );
 };
+
+const Container = styled.main`
+  ${tw`mt-8 max-w-md mx-auto`}
+`;
+
+const ImageContainer = styled.h1`
+  ${tw`px-12 py-4 max-w-md mt-8 mx-auto`}
+`;
 
 const Title = styled.h1`
   text-align: 'center';
