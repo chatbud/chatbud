@@ -85,9 +85,6 @@ nextapp.prepare().then(() => {
   });
 
   app.use(cors());
-  app.all('*', (req, res) => {
-    return handle(req, res);
-  });
 
   // categorize('animal crossing').then((traits) => console.log(traits));
 
@@ -241,6 +238,9 @@ nextapp.prepare().then(() => {
     res.json(db.buds[req.params.id]);
   });
 
+  app.all('*', (req, res) => {
+    return handle(req, res);
+  });
   server.listen(process.env.PORT, () => {
     console.log(`listening on *:${process.env.PORT}`);
   });
