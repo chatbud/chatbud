@@ -1,15 +1,23 @@
 const dotenv = require('dotenv');
 const express = require('express');
 const http = require('http');
-// import { categorize } from './Azure.js';
 const { Server } = require('socket.io');
 const cors = require('cors');
 const twilio = require('twilio');
+const fetch = import('node-fetch');
 const next = require('next');
+
 dotenv.config();
-const dev = process.env.NODE_ENV !== 'production';
-const nextapp = next({ dev });
-const handle = nextapp.getRequestHandler();
+
+async function categorize(query) {
+  const url = process.env.AZURE_URL + query;
+
+  const resp = await fetch(url);
+
+  const json = await resp.json();
+
+  return json;
+}
 
 // twilio
 const twilioSID = process.env.TWILIO_SID;
@@ -21,56 +29,85 @@ const twilioClient = twilio(twilioSID, twilioToken);
 const phoneCodes = {};
 const db = {
   users: {
-    1: { name: 'Devon', yearOfBirth: '3', interests: [], avatarSeed: 'devon' },
-    0: {
-      name: 'Kookie Kat',
-      yearOfBirth: '3',
-      interests: [],
-      avatarSeed: 'nami3'
-    }
+    // 0: {
+    //   name: 'Devon',
+    //   yearOfBirth: '3',
+    //   interests: ['cookies', 'python3.0'],
+    //   avatarSeed: 'devon',
+    //   favInterest: 'tech'
+    // },
+    // 1: {
+    //   name: 'Kookie Kat',
+    //   yearOfBirth: '3',
+    //   interests: ['coding', 'dancing'],
+    //   avatarSeed: 'nami3',
+    //   favInterest: 'video games'
+    // },
+    // 2: {
+    //   name: 'Vinh T',
+    //   yearOfBirth: '3',
+    //   interests: ['lunch'],
+    //   avatarSeed: 'vinh',
+    //   favInterest: 'tech'
+    // },
+    // 3: {
+    //   name: 'Deen',
+    //   yearOfBirth: '3',
+    //   interests: ['tech', 'python3.0'],
+    //   avatarSeed: 'd',
+    //   favInterest: 'beauty'
+    // }
   },
   buds: {
-    1: {
-      users: [
-        {
-          id: 1,
-          name: 'Devon',
-          image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
-        },
-        {
-          id: 0,
-          name: 'Kookie Kat',
-          image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
-        }
-      ],
-      msgs: [
-        {
-          id: 0,
-          msg: 'Hey',
-          image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
-        },
-        {
-          id: 1,
-          msg: 'Hey',
-          image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
-        },
-        {
-          id: 1,
-          msg: "What's up",
-          image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
-        },
-        {
-          id: 0,
-          msg: 'Not much hbu',
-          image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
-        }
-      ]
-    }
+    // 1: {
+    //   users: [
+    //     {
+    //       id: 1,
+    //       name: 'Devon',
+    //       avatarSeed: 'devon',
+    //       interests: ['cooking', 'coding']
+    //     },
+    //     {
+    //       id: 0,
+    //       name: 'Kookie Kat',
+    //       avatarSeed: 'nami3',
+    //       interests: ['coding', 'dancing']
+    //     }
+    //   ],
+    //   msgs: [
+    //     {
+    //       id: 0,
+    //       msg: 'Hey',
+    //       avatarSeed: 'devon'
+    //     },
+    //     {
+    //       id: 1,
+    //       msg: 'Hey',
+    //       avatarSeed: 'nami3'
+    //     },
+    //     {
+    //       id: 1,
+    //       msg: "What's up",
+    //       avatarSeed: 'nami3'
+    //     },
+    //     {
+    //       id: 0,
+    //       msg: 'Not much hbu',
+    //       avatarSeed: 'devon'
+    //     }
+    //   ]
+    // }
   }
 };
 
 let nextUserID = 0;
+let nextBudID = 2;
 // express
+
+const dev = process.env.NODE_ENV !== 'production';
+const nextapp = next({ dev });
+const handle = nextapp.getRequestHandler();
+
 nextapp.prepare().then(() => {
   const app = express();
   app.use(express.urlencoded({ extended: false }));
@@ -86,19 +123,17 @@ nextapp.prepare().then(() => {
 
   app.use(cors());
 
-  // categorize('animal crossing').then((traits) => console.log(traits));
-
   io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('joinRoom', (room) => {
       socket.join(room);
     });
-    socket.on('chat', ({ room, msg, id }) => {
-      io.to(room).emit('chat', { msg, id });
+    socket.on('chat', ({ room, msg, id, avatarSeed }) => {
+      io.to(room).emit('chat', { msg, id, avatarSeed });
       if (!db.buds[room]) {
         db.buds[room] = { msgs: [] };
       }
-      db.buds[room].msgs.push({ msg, id });
+      db.buds[room].msgs.push({ msg, id, avatarSeed });
     });
   });
 
@@ -113,6 +148,8 @@ nextapp.prepare().then(() => {
 
   const generatePhoneCode = (phoneNumber) => {
     const code = Math.floor(Math.random() * 900000) + 100000;
+    console.log(`Sending code: ${code} to phone number: ${phoneNumber}`);
+
     twilioClient.messages.create({
       body: `Your ChatBud authentication code is ${code}`,
       from: twilioPhoneNumber,
@@ -183,9 +220,76 @@ nextapp.prepare().then(() => {
       avatarSeed: req.body.avatarSeed
     };
 
+    const results = categorize(interests[0]).then((traits) => {
+      user.favInterest = traits.prediction.topIntent;
+    });
+
     db.users[nextUserID] = user;
     nextUserID++;
     res.status(200).json({ id: nextUserID - 1 });
+  });
+
+  app.post('/matchmake', authenticate, (req, res) => {
+    // get the user id from header
+    // Then find another user that has the same interests
+    const userId = Number(req.header('User-Id'));
+    const user = db.users[userId];
+
+    const alreadyMatched = [];
+
+    for (const bud in db.buds) {
+      const convo = db.buds[bud];
+      if (convo.users.some((user) => user.id === userId)) {
+        const users = convo.users;
+        let b;
+        if (users[0].id === userId) {
+          b = users[1].id;
+        } else {
+          b = users[0].id;
+        }
+
+        alreadyMatched.push(Number(b));
+      }
+    }
+
+    for (let potential in db.users) {
+      console.log(potential);
+      if (
+        Number(potential) !== userId &&
+        !alreadyMatched.includes(Number(potential))
+      ) {
+        const potentialUser = db.users[potential];
+        if (
+          potentialUser.interests.some((interest) =>
+            user.interests.includes(interest)
+          ) ||
+          potentialUser.favInterest === user.favInterest
+        ) {
+          db.buds[nextBudID] = {
+            users: [
+              {
+                id: userId,
+                name: user.name,
+                image: user.avatarSeed,
+                interests: [user.interests]
+              },
+              {
+                id: potential,
+                name: potentialUser.name,
+                image: potentialUser.avatarSeed,
+                interests: [potentialUser.interests]
+              }
+            ],
+            msgs: []
+          };
+
+          res.status(200).json({ debug: db.buds[nextBudID], id: nextBudID++ });
+          return;
+        }
+      }
+    }
+
+    res.sendStatus(404); // sadge
   });
 
   /**
@@ -224,7 +328,7 @@ nextapp.prepare().then(() => {
           b = users[0];
         }
         b.id = bud;
-        b.lastMessage = convo.msgs[convo.msgs.length - 1].msg;
+        b.lastMessage = convo.msgs[convo.msgs.length - 1]?.msg || '';
         buds.push(b);
       }
     }
@@ -241,6 +345,7 @@ nextapp.prepare().then(() => {
   app.all('*', (req, res) => {
     return handle(req, res);
   });
+
   server.listen(process.env.PORT, () => {
     console.log(`listening on *:${process.env.PORT}`);
   });

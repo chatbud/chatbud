@@ -10,7 +10,7 @@ const BudsPage: NextPage = () => {
   useEffect(() => {
     const fn = async () => {
       const json = await (
-        await fetch('/buds', {
+        await fetch('http://localhost:5000/buds', {
           headers: { 'User-Id': window.localStorage.getItem('userId')! }
         })
       ).json();
@@ -29,7 +29,7 @@ const BudsPage: NextPage = () => {
               key={`bud-${bud.id}`}
               id={bud.id}
               name={bud.name}
-              image={bud.image}
+              image={getAvatarImage(bud.avatarSeed)}
               lastMessage={bud.lastMessage}
             />
           ))}
@@ -40,15 +40,19 @@ const BudsPage: NextPage = () => {
 };
 
 const Container = styled.main`
-  ${tw`flex flex-col space-y-4 p-4`}
+  ${tw`flex flex-col space-y-4 max-w-md mx-auto`}
 `;
 
 const Title = styled.h1`
-  ${tw`text-2xl font-semibold mt-4`}
+  ${tw`text-2xl font-semibold mt-16 text-center`}
 `;
 
 const Content = styled.div`
-  ${tw`flex flex-col space-y-2`}
+  ${tw`flex flex-col space-y-2 p-4`}
 `;
+
+function getAvatarImage(seed: string) {
+  return `https://avatars.dicebear.com/api/avataaars/${seed}.svg`;
+}
 
 export default BudsPage;

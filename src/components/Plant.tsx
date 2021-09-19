@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 
 interface PlantProps {
@@ -7,15 +7,21 @@ interface PlantProps {
 
 const Plant: React.FC<PlantProps> = () => {
   // TODO: make progress adjust size of plant
+  const [growing, setGrowing] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setGrowing(false), 1000);
+  }, []);
+
   return (
     <Container>
-      <Stem>
-        <Leaf $position="1" />
-        <Leaf $position="2" />
-        <Leaf $position="3" />
-        <Leaf $position="4" />
-        <Leaf $position="5" />
-        <Leaf $position="6" />
+      <Stem $growing={growing}>
+        <Leaf $position="1" $growing={growing} />
+        <Leaf $position="2" $growing={growing} />
+        <Leaf $position="3" $growing={growing} />
+        <Leaf $position="4" $growing={growing} />
+        <Leaf $position="5" $growing={growing} />
+        <Leaf $position="6" $growing={growing} />
       </Stem>
       <Pot />
       <PotTop />
@@ -49,16 +55,22 @@ const PotTop = styled.div`
   border-radius: 3px;
 `;
 
-const Stem = styled.div`
-  position: absolute;
+interface StyleProps {
+  $growing: boolean;
+}
+
+const Stem = styled.div(({ $growing }: StyleProps) => [
+  `position: absolute;
   width: 2%;
   height: 30%;
   left: 49%;
   bottom: 20%;
   background: #70b77e;
-  transform-origin: bottom;
-  ${tw`animate-wave duration-300 ease-in-out`}
-`;
+  transform-origin: bottom;`,
+  $growing
+    ? tw`animate-grow duration-150`
+    : tw`animate-wave duration-300 ease-in-out`
+]);
 
 const LeafStyles: Record<string, string> = {
   '1': `top: 70%; left: 50%; transform: rotate(-25deg);`,
@@ -70,8 +82,9 @@ const LeafStyles: Record<string, string> = {
 };
 interface LeafProps {
   $position: string;
+  $growing: boolean;
 }
-const Leaf = styled.div(({ $position }: LeafProps) => [
+const Leaf = styled.div(({ $position, $growing }: LeafProps) => [
   `
     position: absolute;
     width: 700%;
@@ -79,6 +92,7 @@ const Leaf = styled.div(({ $position }: LeafProps) => [
     border-radius: 50%;
     background: #70b77e;
   `,
-  $position && LeafStyles[$position]
+  $position && LeafStyles[$position],
+  $growing && tw`animate-leafGrow duration-100`
 ]);
 export default Plant;
