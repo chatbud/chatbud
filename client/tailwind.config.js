@@ -70,6 +70,7 @@ module.exports = {
       ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
       pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       bounce: 'bounce 1s infinite',
+      wave: 'wave 3s infinite',
     },
     backdropBlur: (theme) => theme('blur'),
     backdropBrightness: (theme) => theme('brightness'),
@@ -477,6 +478,24 @@ module.exports = {
           animationTimingFunction: 'cubic-bezier(0,0,0.2,1)',
         },
       },
+      wave: {
+        '0%': {
+          transform: 'rotateZ(3deg) translateZ(-1px)'
+        },
+        '25%': {
+          transform: 'rotateZ(-4deg) translateZ(-1px)'
+        },
+        '50%': {
+          transform: 'rotateZ(2deg) translateZ(-1px)'
+        },
+        '75%': {
+          transform: 'rotateZ(-6deg) translateZ(-1px)'
+        },
+        '100%': {
+          transform: 'rotateZ(3deg) translateZ(-1px)'
+        },
+        
+      }
     },
     letterSpacing: {
       tighter: '-0.05em',
