@@ -1,6 +1,5 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
-import Link from 'next/link';
 
 interface MessageProps {
   msg: string;
@@ -24,11 +23,11 @@ const Message: React.FC<MessageProps> = ({ msg, id, image, you }) => {
 };
 
 const Container = styled.a`
-  ${tw`px-4 py-3 bg-white border bg-blue-100 rounded-lg flex flex-row items-center hover:bg-blue-200`}
+  ${tw`px-4 py-3 bg-blue-100 rounded-lg flex flex-row items-center hover:bg-blue-200`}
 `;
 
 const YouContainer = styled.a`
-  ${tw`px-4 py-3 bg-white border bg-green-500 rounded-lg flex flex-row-reverse items-center hover:bg-green-600`}
+  ${tw`px-4 py-3 bg-green-500 rounded-lg flex flex-row-reverse items-center hover:bg-green-600`}
 `;
 
 const Image = styled.img`
