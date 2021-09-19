@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
