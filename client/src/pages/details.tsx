@@ -136,7 +136,10 @@ const UserDetails: NextPage = () => {
           />
           <button
             type="button"
-            css={[tw`border`, btnStyles]}
+            css={[
+              tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded mt-3`,
+              btnStyles
+            ]}
             onClick={saveProfile}
           >
             Save
@@ -183,22 +186,7 @@ const hoverStyles = css`
 `;
 
 const btnStyles = css`
-  display: inline-block;
-  padding: 0.3em 1.2em;
-  margin: 0.5em 0.3em 0 0;
-  border-radius: 2em;
-  box-sizing: border-box;
-  text-decoration: none;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  color: #ffffff;
-  background-color: #72bc59;
-  text-align: center;
-  transition: all 0.2s;
   float: right;
-  &:hover {
-    background-color: #44832f;
-  }
 `;
 
 export default UserDetails;
