@@ -1,20 +1,21 @@
 import React from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
-import Link from 'next/link';
 
 import Layout from '@/components/Layout';
 import Plant from '@/components/Plant';
 
 const HomePage: NextPage = () => {
+  const router = useRouter();
   return (
     <Layout title="Home">
       <Container>
-        <Title>Welcome 😊</Title>
+        <Title>Welcome back! 😊</Title>
         <Content>
-          <Aside>Good Job!</Aside>
+          <AsideLeft>Great job yesterday</AsideLeft>
           <Plant progress={0.1} />
-          <Aside>+90% growth since yesterday!</Aside>
+          <AsideRight>+25% growth since you&apos;ve started</AsideRight>
         </Content>
         <Button
           onClick={async () => {
@@ -24,8 +25,7 @@ const HomePage: NextPage = () => {
                 headers: { 'User-Id': window.localStorage.getItem('userId')! }
               })
             ).json();
-
-            window.location.pathname = `/buds/${json.id}`;
+            router.push(`/buds/${json.id}`);
           }}
         >
           Find a Bud
@@ -36,7 +36,7 @@ const HomePage: NextPage = () => {
 };
 
 const Container = styled.main`
-  ${tw`flex flex-col justify-center items-center space-y-8`}
+  ${tw`flex flex-col justify-center items-center space-y-4`}
 `;
 
 const Title = styled.h1`
@@ -44,15 +44,19 @@ const Title = styled.h1`
 `;
 
 const Content = styled.div`
-  ${tw`flex flex-col justify-center items-center`}
+  ${tw`flex flex-col md:grid md:grid-cols-3 justify-center items-center`}
 `;
 
-const Aside = styled.p`
-  ${tw`text-lg text-gray-600`}
+const AsideLeft = styled.p`
+  ${tw`text-lg text-gray-600 text-right`}
+`;
+
+const AsideRight = styled.p`
+  ${tw`text-lg text-gray-600 text-left mt-4 md:mt-0`}
 `;
 
 const Button = styled.a`
-  ${tw`px-3 py-1 border rounded-lg hover:bg-gray-200 cursor-pointer`}
+  ${tw`w-72 px-4 py-2 border rounded-lg bg-leaf text-white text-center font-semibold tracking-widest`}
 `;
 
 export default HomePage;

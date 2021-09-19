@@ -40,15 +40,15 @@ const BudsPage: NextPage = () => {
 };
 
 const Container = styled.main`
-  ${tw`flex flex-col space-y-4 p-4`}
+  ${tw`flex flex-col space-y-4 max-w-md mx-auto`}
 `;
 
 const Title = styled.h1`
-  ${tw`text-2xl font-semibold mt-4`}
+  ${tw`text-2xl font-semibold mt-16 text-center`}
 `;
 
 const Content = styled.div`
-  ${tw`flex flex-col space-y-2`}
+  ${tw`flex flex-col space-y-2 p-4`}
 `;
 
 export default BudsPage;
