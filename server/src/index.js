@@ -1,15 +1,38 @@
-
-import dotenv from 'dotenv';
-import express from 'express'
-import http from 'http';
-import { categorize } from './Azure.js';
+import dotenv from "dotenv";
+import express from "express";
+import http from "http";
+import { categorize } from "./Azure.js";
 import { Server } from "socket.io";
-import cors from 'cors';
+import cors from "cors";
 
 // database
 const phoneCodes = {};
 const db = {
-  users: {}
+  users: {},
+  convos: {
+    1: [
+      {
+        id: 1,
+        msg: "Hey",
+        image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+      },
+      {
+        id: 2,
+        msg: "Hey",
+        image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+      },
+      {
+        id: 2,
+        msg: "What's up",
+        image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+      },
+      {
+        id: 1,
+        msg: "Not much hbu",
+        image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+      },
+    ],
+  },
 };
 
 let nextUserID = 0;
@@ -22,8 +45,8 @@ const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
-   credentials: true
- }
+    credentials: true,
+  },
 });
 
 app.use(cors());
@@ -32,36 +55,39 @@ dotenv.config();
 
 // categorize('animal crossing').then((traits) => console.log(traits));
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('joinRoom', (room) => {
-    socket.join(room)
-  })
-  socket.on('chat', ({room, msg, name}) => {
-    io.to(room).emit('chat', {msg, name});
-  })
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("joinRoom", (room) => {
+    socket.join(room);
+  });
+  socket.on("chat", ({ room, msg, id }) => {
+    io.to(room).emit("chat", { msg, id });
+    if (!db.convos[room]) {
+      db.convos[room] = [];
+    }
+    db.convos[room].push({ msg, id });
+  });
 });
-
 
 const authenticate = (req, res, next) => {
   // check headers for id
-  if (!db.users.hasOwnProperty(req.header('User-Id'))) {
+  if (!db.users.hasOwnProperty(req.header("User-Id"))) {
     res.sendStatus(401);
   } else {
     next();
   }
-}
+};
 
 const generatePhoneCode = (phoneNumber) => {
   const code = Math.floor(Math.random() * 9000) + 1000;
   phoneCodes[phoneNumber] = code;
-}
+};
 
 /**
  * Login route (login and sign up)
  * First sign-in will generate a code
  */
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
   const { phone_number, code } = req.body;
   if (!phone_number) {
     req.sendStatus(400);
@@ -84,13 +110,13 @@ app.post('/login', (req, res) => {
   if (code === phoneCodes[phone_number]) {
     // if user exists, redirect to /home
     // if not, redirect to /details
-    const id = req.header('User-Id');
+    const id = req.header("User-Id");
     if (db.users.hasOwnProperty(id)) {
-      res.status.json({ redirect: '/home' });
+      res.status.json({ redirect: "/home" });
     } else {
       // !TODO: create user entry
       // db.users[someNewID] = { phone_number };
-      res.status.json({ redirect: '/details' });
+      res.status.json({ redirect: "/details" });
     }
   } else {
     res.sendStatus(401);
@@ -100,8 +126,13 @@ app.post('/login', (req, res) => {
 /**
  * Route to create user
  */
-app.post('/user/create', (req, res) => { 
-  if (!req.body.name || !req.body.yearOfBirth || !req.body.interests.length === 0 || !req.body.avatarSeed) {
+app.post("/user/create", (req, res) => {
+  if (
+    !req.body.name ||
+    !req.body.yearOfBirth ||
+    !req.body.interests.length === 0 ||
+    !req.body.avatarSeed
+  ) {
     res.status(400).send("Input fields missing");
     return;
   }
@@ -110,8 +141,8 @@ app.post('/user/create', (req, res) => {
     name: req.body.name,
     yearOfBirth: req.body.yearOfBirth,
     interests: req.body.interests,
-    avatarSeed: req.body.avatarSeed
-  }
+    avatarSeed: req.body.avatarSeed,
+  };
 
   db.users[nextUserID] = user;
   nextUserID++;
@@ -121,14 +152,12 @@ app.post('/user/create', (req, res) => {
 /**
  * Route to update user details
  */
-app.post('/user/update', authenticate, (req, res) => {
-
-});
+app.post("/user/update", authenticate, (req, res) => {});
 
 /**
  * Route to update user phone number
  */
-app.post('/user/phone', authenticate, (req, res) => {
+app.post("/user/phone", authenticate, (req, res) => {
   // Similar flow to login
   // generatePhoneCode(phone_number);
 });
@@ -136,22 +165,19 @@ app.post('/user/phone', authenticate, (req, res) => {
 /**
  * Route to get current user's details (plant related?)
  */
-app.get('/user', authenticate, (req, res) => {
-
-});
+app.get("/user", authenticate, (req, res) => {});
 
 /**
  * Route to get a list of user's buds
  */
-app.get('/buds', authenticate, (req, res) => {
-
-});
+app.get("/buds", authenticate, (req, res) => {});
 
 /**
  * Route to get details for a user's specific bud
  */
-app.get('/buds/:id', authenticate, (req, res) => {});
-
+app.get("/buds/:id", (req, res) => {
+  res.json(db.convos[req.params.id]);
+});
 
 server.listen(process.env.PORT, () => {
   console.log(`listening on *:${process.env.PORT}`);
