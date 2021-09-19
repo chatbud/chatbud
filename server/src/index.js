@@ -193,18 +193,6 @@ app.get("/user", authenticate, (req, res) => {});
  * Route to get a list of user's buds
  */
 app.get("/buds", authenticate, (req, res) => {
-  // const mockData = [
-  //   { id: '1', name: 'Kooky Kat', image: '/mockdata.jpg' },
-  //   { id: '2', name: 'Deen Haque' },
-  //   { id: '3', name: 'Omegalul', image: '/mockdata.jpg' },
-  //   { id: '4', name: 'the mackeral', image: '/mockdata.jpg' }
-  // ];
-
-  // users: [
-  //   { id: 1, name: "Devon" },
-  //   { id: 0, name: "Kookie Kat" },
-  // ],
-
   const uid = Number(req.header("User-Id"));
   const buds = [];
   for (const bud in db.buds) {
