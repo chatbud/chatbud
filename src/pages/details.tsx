@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import Layout from '@/components/Layout';
-import { getUserId, setUserId, setUserSeed } from '@/utils/functions';
+import { setUserId, setUserSeed } from '@/utils/functions';
 import logoSrc from '@/assets/chatbud_logo.png';
 
 interface ProfileInput {
@@ -26,10 +26,6 @@ const UserDetails: NextPage = () => {
   });
   const [error, setError] = useState<boolean>(false);
   const router = useRouter();
-
-  useEffect(() => {
-    if (!getUserId()) router.push('/');
-  }, []);
 
   const interestsOnChange = (e: any) => {
     if (input.interests.length > 5) return;
