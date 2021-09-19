@@ -114,7 +114,7 @@ const Content = styled.div`
 `;
 
 function myId() {
-  return myId();
+  return Number(window.localStorage.getItem('userId'));
 }
 
 export default BudsPage;
