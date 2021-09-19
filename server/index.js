@@ -29,74 +29,74 @@ const twilioClient = twilio(twilioSID, twilioToken);
 const phoneCodes = {};
 const db = {
   users: {
-    0: {
-      name: 'Devon',
-      yearOfBirth: '3',
-      interests: ['cookies', 'python3.0'],
-      avatarSeed: 'devon',
-      favInterest: 'tech'
-    },
-    1: {
-      name: 'Kookie Kat',
-      yearOfBirth: '3',
-      interests: ['coding', 'dancing'],
-      avatarSeed: 'nami3',
-      favInterest: 'video games'
-    },
-    2: {
-      name: 'Vinh T',
-      yearOfBirth: '3',
-      interests: ['lunch'],
-      avatarSeed: 'vinh',
-      favInterest: 'tech'
-    },
-    3: {
-      name: 'Deen',
-      yearOfBirth: '3',
-      interests: ['tech', 'python3.0'],
-      avatarSeed: 'd',
-      favInterest: 'beauty'
-    }
+    // 0: {
+    //   name: 'Devon',
+    //   yearOfBirth: '3',
+    //   interests: ['cookies', 'python3.0'],
+    //   avatarSeed: 'devon',
+    //   favInterest: 'tech'
+    // },
+    // 1: {
+    //   name: 'Kookie Kat',
+    //   yearOfBirth: '3',
+    //   interests: ['coding', 'dancing'],
+    //   avatarSeed: 'nami3',
+    //   favInterest: 'video games'
+    // },
+    // 2: {
+    //   name: 'Vinh T',
+    //   yearOfBirth: '3',
+    //   interests: ['lunch'],
+    //   avatarSeed: 'vinh',
+    //   favInterest: 'tech'
+    // },
+    // 3: {
+    //   name: 'Deen',
+    //   yearOfBirth: '3',
+    //   interests: ['tech', 'python3.0'],
+    //   avatarSeed: 'd',
+    //   favInterest: 'beauty'
+    // }
   },
   buds: {
-    1: {
-      users: [
-        {
-          id: 1,
-          name: 'Devon',
-          avatarSeed: 'devon',
-          interests: ['cooking', 'coding']
-        },
-        {
-          id: 0,
-          name: 'Kookie Kat',
-          avatarSeed: 'nami3',
-          interests: ['coding', 'dancing']
-        }
-      ],
-      msgs: [
-        {
-          id: 0,
-          msg: 'Hey',
-          avatarSeed: 'devon'
-        },
-        {
-          id: 1,
-          msg: 'Hey',
-          avatarSeed: 'nami3'
-        },
-        {
-          id: 1,
-          msg: "What's up",
-          avatarSeed: 'nami3'
-        },
-        {
-          id: 0,
-          msg: 'Not much hbu',
-          avatarSeed: 'devon'
-        }
-      ]
-    }
+    // 1: {
+    //   users: [
+    //     {
+    //       id: 1,
+    //       name: 'Devon',
+    //       avatarSeed: 'devon',
+    //       interests: ['cooking', 'coding']
+    //     },
+    //     {
+    //       id: 0,
+    //       name: 'Kookie Kat',
+    //       avatarSeed: 'nami3',
+    //       interests: ['coding', 'dancing']
+    //     }
+    //   ],
+    //   msgs: [
+    //     {
+    //       id: 0,
+    //       msg: 'Hey',
+    //       avatarSeed: 'devon'
+    //     },
+    //     {
+    //       id: 1,
+    //       msg: 'Hey',
+    //       avatarSeed: 'nami3'
+    //     },
+    //     {
+    //       id: 1,
+    //       msg: "What's up",
+    //       avatarSeed: 'nami3'
+    //     },
+    //     {
+    //       id: 0,
+    //       msg: 'Not much hbu',
+    //       avatarSeed: 'devon'
+    //     }
+    //   ]
+    // }
   }
 };
 
@@ -268,16 +268,16 @@ nextapp.prepare().then(() => {
           db.buds[nextBudID] = {
             users: [
               {
-                id: userId,
+                id: Number(userId),
                 name: user.name,
                 image: user.avatarSeed,
-                interests: [user.interests]
+                interests: user.interests
               },
               {
-                id: potential,
+                id: Number(potential),
                 name: potentialUser.name,
                 image: potentialUser.avatarSeed,
-                interests: [potentialUser.interests]
+                interests: potentialUser.interests
               }
             ],
             msgs: []
@@ -310,22 +310,26 @@ nextapp.prepare().then(() => {
    */
   app.get('/user', authenticate, (req, res) => {});
 
+  app.get('/budss', (req, res) => {
+    res.json(db.buds);
+  });
   /**
    * Route to get a list of user's buds
    */
   app.get('/buds', authenticate, (req, res) => {
     const uid = Number(req.header('User-Id'));
     const buds = [];
+
     for (const bud in db.buds) {
       const convo = db.buds[bud];
-      if (convo.users.some((user) => user.id === uid)) {
+      if (convo.users.some((user) => Number(user.id) === uid)) {
         const users = convo.users;
         let b = {};
 
-        if (users[0].id === uid) {
-          b = users[1];
+        if (Number(users[0].id) === Number(uid)) {
+          b = { ...users[1] };
         } else {
-          b = users[0];
+          b = { ...users[0] };
         }
         b.id = bud;
         b.lastMessage = convo.msgs[convo.msgs.length - 1]?.msg || '';
