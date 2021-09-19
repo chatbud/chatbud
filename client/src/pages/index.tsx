@@ -1,6 +1,5 @@
 import React, { useState, useEffect, HTMLInputEvent } from 'react';
 import tw, { styled } from 'twin.macro';
-import Modal from 'react-modal';
 import { NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -80,6 +79,12 @@ const IndexPage: NextPage = () => {
     }
   };
 
+  const closeModal = () => {
+    setValidationMessage('');
+    setRender2FA(false);
+    setRenderLogin(false);
+  };
+
   return (
     <Layout title="ChatBud - Grow with friends!" noNavbar={!isAuthed}>
       <Container>
@@ -87,69 +92,140 @@ const IndexPage: NextPage = () => {
           <Image src={logoSrc} />
         </Title>
         <Subtitle>Growing your network, one bud at a time</Subtitle>
-        <Modal
-          isOpen={renderLogin}
-          onRequestClose={() => setRenderLogin(false)}
-          contentLabel="Become a ChatBud!"
-          ariaHideApp={false}
-        >
+        {renderLogin && (
           <>
-            <Title>Join!</Title>
-            <label htmlFor="Enter Phone #">Phone Number: </label>
-            <StyledInput
-              name="Phone Number"
-              value={phoneNumber}
-              onInput={(e: HTMLInputEvent) => onPhoneInput(e.target.value)}
-              marginBot={10}
-            />
-            <br />
-            {render2FA && (
-              <>
-                <label htmlFor="Enter Code">
-                  Enter Code Sent To Your Phone:{' '}
-                </label>
-                <StyledInput
-                  name="Enter Code"
-                  value={twoFactorCode}
-                  onInput={(e: HTMLInputEvent) =>
-                    setTwoFactorCode(e.target.value)
-                  }
-                  marginBot={10}
-                />
-              </>
-            )}
-            <StyledButton onClick={onJoinPress}>Join!</StyledButton>
-            <br />
-            {validationMessage && (
+            <div
+              css={[
+                tw`justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none m-3`
+              ]}
+              onClick={closeModal}
+            >
               <div
-                css={[
-                  tw`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mt-4`
-                ]}
-                role="alert"
+                css={[tw`relative w-auto my-6 mx-auto max-w-3xl`]}
+                onClick={(e) => {
+                  // do not close modal if anything inside modal content is clicked
+                  e.stopPropagation();
+                }}
               >
-                <strong className="font-bold">Oops! </strong>
-                <span className="block sm:inline">{validationMessage}</span>
+                <div
+                  css={[
+                    tw`border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none`
+                  ]}
+                >
+                  <div
+                    css={[
+                      tw`flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t`
+                    ]}
+                  >
+                    <h3 css={[tw`text-3xl font-semibold`]}>Join ChatBud🌱</h3>
+                    <button
+                      type="button"
+                      css={[
+                        tw`p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none`
+                      ]}
+                      onClick={closeModal}
+                    >
+                      <span
+                        css={[
+                          tw`bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none`
+                        ]}
+                      >
+                        ×
+                      </span>
+                    </button>
+                  </div>
+                  <div css={[tw`relative p-6 flex-auto`]}>
+                    {!render2FA ? (
+                      <>
+                        <p>
+                          Enter your phone number to authenticate your account.
+                        </p>
+                        <StyledInput
+                          name="Phone Number"
+                          placeholder="Phone Number"
+                          value={phoneNumber}
+                          onInput={(e: HTMLInputEvent) =>
+                            onPhoneInput(e.target.value)
+                          }
+                          marginBot={10}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <label htmlFor="Enter Code">
+                          Enter the code sent to your phone:
+                        </label>
+                        <StyledInput
+                          name="Enter Code"
+                          placeholder="Verification Code"
+                          value={twoFactorCode}
+                          onInput={(e: HTMLInputEvent) =>
+                            setTwoFactorCode(e.target.value)
+                          }
+                          marginBot={10}
+                        />
+                      </>
+                    )}
+                    <br />
+                    {validationMessage && (
+                      <div
+                        css={[
+                          tw`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4`
+                        ]}
+                        role="alert"
+                      >
+                        <strong className="font-bold">Oops! </strong>
+                        <span className="block sm:inline">
+                          {validationMessage}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    css={[
+                      tw`flex items-center justify-end p-6 border-t border-solid border-gray-200 rounded-b`
+                    ]}
+                  >
+                    <button
+                      css={[
+                        tw`text-red-500 font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`
+                      ]}
+                      type="button"
+                      onClick={closeModal}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      css={[
+                        tw`bg-leaf text-white active:bg-leaf-dark font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`
+                      ]}
+                      type="button"
+                      onClick={onJoinPress}
+                    >
+                      Send
+                    </button>
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
+            <div css={[tw`opacity-25 fixed inset-0 z-40 bg-black`]} />
           </>
-        </Modal>
-        <StyledButton onClick={() => !renderLogin && setRenderLogin(true)}>
+        )}
+        <button
+          type="button"
+          css={[
+            tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded`
+          ]}
+          onClick={() => !renderLogin && setRenderLogin(true)}
+        >
           Become a ChatBud!
-        </StyledButton>
+        </button>
       </Container>
     </Layout>
   );
 };
 
 export default IndexPage;
-
-const StyledButton = styled.button`
-  /* background-color: green; */
-  padding: 5px;
-  border: 1px solid black;
-  /* position: relative; */
-  /* left: 1%; */
-`;
 
 const Container = styled.div`
   ${tw`flex flex-col items-center space-y-4`}

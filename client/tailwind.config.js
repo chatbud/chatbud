@@ -26,6 +26,10 @@ module.exports = {
       indigo: colors.indigo,
       purple: colors.violet,
       pink: colors.pink,
+      leaf: {
+        DEFAULT: '#72bc59',
+        dark: '#44832f'
+      }
     },
     spacing: {
       px: '1px',

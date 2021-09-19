@@ -10,7 +10,7 @@ const Navbar = () => {
       <Wrapper>
         <Link href="/home" passHref>
           <Title>
-            <Image width={128} height={36} src={logoSrc} alt="chatbug logo" />
+            <Image width={128} height={36} src={logoSrc} alt="chatbud logo" />
           </Title>
         </Link>
         <Buttons>
