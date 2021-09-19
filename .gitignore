@@ -6,8 +6,10 @@
 .pnp.js
 
 # testing
-/coverage
+node_modules
 
+/coverage
+.env
 # next.js
 /.next/
 /out/

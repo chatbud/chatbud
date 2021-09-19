@@ -1,4 +1,6 @@
-import React, { useState, useEffect, HTMLInputEvent } from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import { NextPage } from 'next';
 import Image from 'next/image';
@@ -144,14 +146,14 @@ const IndexPage: NextPage = () => {
                           name="Phone Number"
                           placeholder="Phone Number"
                           value={phoneNumber}
-                          onInput={(e: HTMLInputEvent) =>
-                            onPhoneInput(e.target.value)
-                          }
+                          onInput={(e: any) => onPhoneInput(e.target.value)}
+                          // @ts-ignore
                           marginBot={10}
                         />
                       </>
                     ) : (
                       <>
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                         <label htmlFor="Enter Code">
                           Enter the code sent to your phone:
                         </label>
@@ -159,9 +161,8 @@ const IndexPage: NextPage = () => {
                           name="Enter Code"
                           placeholder="Verification Code"
                           value={twoFactorCode}
-                          onInput={(e: HTMLInputEvent) =>
-                            setTwoFactorCode(e.target.value)
-                          }
+                          onInput={(e: any) => setTwoFactorCode(e.target.value)}
+                          // @ts-ignore
                           marginBot={10}
                         />
                       </>
@@ -242,5 +243,6 @@ const Subtitle = styled.h2`
 const StyledInput = styled.input`
   border: 1px solid green;
   border-radius: 5px;
-  ${({ marginBot }) => `margin-bottom: ${marginBot || 0}px`}
+  ${({ marginBot }: { marginBot: number }) =>
+    `margin-bottom: ${marginBot || 0}px`}
 `;

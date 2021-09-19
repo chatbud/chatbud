@@ -1,14 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
 
-import Layout from '@/components/Layout';
-import BudCard from '@/components/BudCard';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/dist/client/router';
+import Layout from '@/components/Layout';
 import Message from '@/components/Message';
 
-const BudsPage: NextPage = (props) => {
+const BudsPage: NextPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [typing, setTyping] = useState('');
   const [chat, setChat] = useState<any>(null);
@@ -49,6 +48,7 @@ const BudsPage: NextPage = (props) => {
         <Content>
           {messages.map(({ id, msg, image }, index) => (
             <Message
+              // eslint-disable-next-line react/no-array-index-key
               key={`${id}-${index}`}
               you={id === myId()}
               msg={msg}

@@ -5,7 +5,7 @@ interface PlantProps {
   progress: number;
 }
 
-const Plant: React.FC<PlantProps> = ({ progress }) => {
+const Plant: React.FC<PlantProps> = () => {
   // TODO: make progress adjust size of plant
   return (
     <Container>

@@ -6,7 +6,7 @@ import Layout from '@/components/Layout';
 import BudCard from '@/components/BudCard';
 
 const BudsPage: NextPage = () => {
-  const [buds, setBuds] = useState([]);
+  const [buds, setBuds] = useState<any[]>([]);
   useEffect(() => {
     const fn = async () => {
       const json = await (
