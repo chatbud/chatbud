@@ -206,7 +206,7 @@ nextapp.prepare().then(() => {
     if (
       !req.body.name ||
       !req.body.yearOfBirth ||
-      !req.body.interests.length === 0 ||
+      req.body.interests.length === 0 ||
       !req.body.avatarSeed
     ) {
       res.status(400).send('Input fields missing');
@@ -222,6 +222,7 @@ nextapp.prepare().then(() => {
 
     const results = categorize(req.body.interests[0]).then((traits) => {
       user.favInterest = traits.prediction.topIntent;
+      console.log(`Fav interest: ${user.favInterest}`);
     });
 
     db.users[nextUserID] = user;

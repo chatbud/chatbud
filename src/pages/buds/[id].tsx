@@ -60,7 +60,7 @@ const BudsPage: NextPage = () => {
     if (match.length > 0) {
       return (
         <p>
-          You two are both interested in <strong>{match}</strong>!
+          You two are both interested in <strong>{match[0]}</strong>!
         </p>
       );
     }
