@@ -67,7 +67,7 @@ const BudsPage: NextPage = (props) => {
                   chat.emit('chat', {
                     room,
                     msg: typing,
-                    id: Number(window.localStorage.getItem('userId'))
+                    id: myId()
                   });
                   setTyping('');
                 }
