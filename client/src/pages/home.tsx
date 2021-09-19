@@ -16,9 +16,20 @@ const HomePage: NextPage = () => {
           <Plant progress={0.1} />
           <Aside>+90% growth since yesterday!</Aside>
         </Content>
-        <Link href="/buds/1" passHref>
-          <Button>Find a Bud</Button>
-        </Link>
+        <Button
+          onClick={async () => {
+            const json = await (
+              await fetch('http://localhost:5000/matchmake', {
+                method: 'POST',
+                headers: { 'User-Id': window.localStorage.getItem('userId')! }
+              })
+            ).json();
+
+            window.location.pathname = `/buds/${json.id}`;
+          }}
+        >
+          Find a Bud
+        </Button>
       </Container>
     </Layout>
   );
@@ -41,7 +52,7 @@ const Aside = styled.p`
 `;
 
 const Button = styled.a`
-  ${tw`px-3 py-1 border rounded-lg`}
+  ${tw`px-3 py-1 border rounded-lg hover:bg-gray-200 cursor-pointer`}
 `;
 
 export default HomePage;
