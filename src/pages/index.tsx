@@ -146,6 +146,7 @@ const IndexPage: NextPage = () => {
                       </>
                     ) : (
                       <>
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                         <label htmlFor="Enter Code">
                           Enter the code sent to your phone:
                         </label>
@@ -215,5 +216,8 @@ const Subtitle = styled.h2`
 `;
 
 const StyledInput = styled.input`
-  ${tw`px-2 py-1 rounded-lg text-sm border border-leaf-dark w-full`}
+  border: 1px solid green;
+  border-radius: 5px;
+  ${({ marginBot }: { marginBot: number }) =>
+    `margin-bottom: ${marginBot || 0}px`}
 `;
