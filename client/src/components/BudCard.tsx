@@ -5,10 +5,11 @@ import Link from 'next/link';
 interface BudCardProps {
   id: string;
   name: string;
-  image?: string;
+  image: string;
+  lastMessage: string;
 }
 
-const BudCard: React.FC<BudCardProps> = ({ id, name, image }) => {
+const BudCard: React.FC<BudCardProps> = ({ id, name, lastMessage, image }) => {
   return (
     <Link href={`/buds/${id}`} passHref>
       <Container>
@@ -18,6 +19,7 @@ const BudCard: React.FC<BudCardProps> = ({ id, name, image }) => {
           <NoImage>{name.charAt(0)}</NoImage>
         )}
         <Name>{name}</Name>
+        <LastMessage>〝{lastMessage}〞</LastMessage>
       </Container>
     </Link>
   );
@@ -34,7 +36,11 @@ const Image = styled.img`
 const NoImage = Image.withComponent('span');
 
 const Name = styled.span`
-  ${tw`text-lg text-gray-600`}
+  ${tw`text-lg text-gray-800`}
+`;
+
+const LastMessage = styled.span`
+  ${tw`text-lg ml-5 text-gray-400`}
 `;
 
 export default BudCard;

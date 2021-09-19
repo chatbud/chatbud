@@ -12,6 +12,7 @@ const BudsPage: NextPage = (props) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [typing, setTyping] = useState('');
   const [chat, setChat] = useState<any>(null);
+  const [other, setOther] = useState('...');
   const router = useRouter();
   const room = router.query.id;
 
@@ -22,7 +23,6 @@ const BudsPage: NextPage = (props) => {
   useEffect(() => {
     if (!room) return;
     const socket = io('http://localhost:5000');
-    socket.emit('Hello!');
     socket.emit('joinRoom', room);
     setChat(socket);
     socket.on('chat', (msg) => {
@@ -31,7 +31,13 @@ const BudsPage: NextPage = (props) => {
 
     fetch(`http://localhost:5000/buds/${room}`).then((res) => {
       res.json().then((data) => {
-        setMessages(data);
+        setMessages(data.msgs);
+        const members = data.users;
+        if (members[0].id === myId()) {
+          setOther(members[1].name);
+        } else {
+          setOther(members[0].name);
+        }
       });
     });
   }, [room]);
@@ -39,12 +45,12 @@ const BudsPage: NextPage = (props) => {
   return (
     <Layout title="Messages with Kooky Kat">
       <Container>
-        <Title>Kooky Kat 🌱</Title>
+        <Title>{other} 🌱</Title>
         <Content>
           {messages.map(({ id, msg, image }, index) => (
             <Message
               key={`${id}-${index}`}
-              you={id === Number(window.localStorage.getItem('userId'))}
+              you={id === myId()}
               msg={msg}
               id={id}
               image={image}
@@ -56,6 +62,16 @@ const BudsPage: NextPage = (props) => {
               onChange={(val) => {
                 setTyping(val.target.value);
               }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  chat.emit('chat', {
+                    room,
+                    msg: typing,
+                    id: myId()
+                  });
+                  setTyping('');
+                }
+              }}
             />
             <Button
               disabled={!typing}
@@ -63,7 +79,7 @@ const BudsPage: NextPage = (props) => {
                 chat.emit('chat', {
                   room,
                   msg: typing,
-                  id: Number(window.localStorage.getItem('userId'))
+                  id: myId()
                 });
                 setTyping('');
               }}
@@ -96,5 +112,9 @@ const Title = styled.h1`
 const Content = styled.div`
   ${tw`flex flex-col space-y-2`}
 `;
+
+function myId() {
+  return Number(window.localStorage.getItem('userId'));
+}
 
 export default BudsPage;
