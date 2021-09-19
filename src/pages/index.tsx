@@ -25,7 +25,7 @@ const IndexPage: NextPage = () => {
     if (uid) {
       setUserId(uid);
       setIsAuthed(true);
-    }
+    } else router.push('/');
   }, []);
 
   useEffect(() => {

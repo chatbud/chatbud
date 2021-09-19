@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
-// import Link from 'next/link';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 
 import Layout from '@/components/Layout';
-import { setUserId } from '@/utils/functions';
+import { getUserId, setUserId } from '@/utils/functions';
 
 const SettingsPage: NextPage = () => {
+  const router = useRouter();
   const handleSignOut = () => {
     setUserId('');
     router.push('/');
   };
+
+  useEffect(() => {
+    if (!getUserId()) router.push('/');
+  }, []);
 
   return (
     <Layout title="Settings">

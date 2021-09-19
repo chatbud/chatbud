@@ -6,7 +6,7 @@ import { useRouter } from 'next/dist/client/router';
 
 import Layout from '@/components/Layout';
 import Message from '@/components/Message';
-import { getUserSeed } from '@/utils/functions';
+import { getUserId, getUserSeed } from '@/utils/functions';
 
 const BudsPage: NextPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -17,6 +17,10 @@ const BudsPage: NextPage = () => {
   const [myInterests, setMyInterests] = useState([]);
   const router = useRouter();
   const room = router.query.id;
+
+  useEffect(() => {
+    if (!getUserId()) router.push('/');
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
