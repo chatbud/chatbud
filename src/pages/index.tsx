@@ -35,7 +35,7 @@ const IndexPage: NextPage = () => {
   }, [isAuthed]);
 
   const onPhoneInput = (value: string) => {
-    if (/^(\+)(\d){0,15}|^$$/.test(value)) {
+    if (/^(\+)(\d){0,15}$/.test(value)) {
       setPhoneNumber(value);
     }
   };
@@ -44,7 +44,7 @@ const IndexPage: NextPage = () => {
     if (!render2FA) {
       setValidationMessage(phoneNumber.length ? '' : 'Enter a phone number');
       if (phoneNumber.length) {
-        const res = await fetch('/login', {
+        const res = await fetch('http://localhost:5000/login', {
           method: 'POST',
           body: JSON.stringify({ phone_number: phoneNumber }),
           headers: { 'Content-Type': 'application/json' }
@@ -62,7 +62,7 @@ const IndexPage: NextPage = () => {
         return;
       }
 
-      const res = await fetch('/login/2fa', {
+      const res = await fetch('http://localhost:5000/login/2fa', {
         method: 'POST',
         body: JSON.stringify({
           phone_number: phoneNumber,
@@ -146,7 +146,6 @@ const IndexPage: NextPage = () => {
                       </>
                     ) : (
                       <>
-                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                         <label htmlFor="Enter Code">
                           Enter the code sent to your phone:
                         </label>
@@ -216,8 +215,5 @@ const Subtitle = styled.h2`
 `;
 
 const StyledInput = styled.input`
-  border: 1px solid green;
-  border-radius: 5px;
-  ${({ marginBot }: { marginBot: number }) =>
-    `margin-bottom: ${marginBot || 0}px`}
+  ${tw`px-2 py-1 rounded-lg text-sm border border-leaf-dark w-full`}
 `;

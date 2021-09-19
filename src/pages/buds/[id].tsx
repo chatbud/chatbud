@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
-<<<<<<< HEAD:client/src/pages/buds/[id].tsx
 import tw, { css, styled } from 'twin.macro';
 import { io } from 'socket.io-client';
 import { useRouter } from 'next/dist/client/router';
 
-=======
-import tw, { styled } from 'twin.macro';
-
-import { io } from 'socket.io-client';
-import { useRouter } from 'next/dist/client/router';
->>>>>>> ea850d7 (prod):src/pages/buds/[id].tsx
 import Layout from '@/components/Layout';
 import Message from '@/components/Message';
 import { getUserSeed } from '@/utils/functions';
@@ -31,14 +24,14 @@ const BudsPage: NextPage = () => {
 
   useEffect(() => {
     if (!room) return;
-    const socket = io();
+    const socket = io('http://localhost:5000');
     socket.emit('joinRoom', room);
     setChat(socket);
     socket.on('chat', (msg) => {
       setMessages((msgs) => [...msgs, msg]);
     });
 
-    fetch(`/buds/${room}`).then((res) => {
+    fetch(`http://localhost:5000/buds/${room}`).then((res) => {
       res.json().then((data) => {
         setMessages(data.msgs);
         const members = data.users;
@@ -91,7 +84,6 @@ const BudsPage: NextPage = () => {
       <Container>
         <Title>{other} 🌱</Title>
         <Content>
-<<<<<<< HEAD:client/src/pages/buds/[id].tsx
           <Messages>
             {messages.map(({ id, msg, avatarSeed }, index) => (
               <Message
@@ -105,19 +97,6 @@ const BudsPage: NextPage = () => {
           </Messages>
           <InputContainer>
             {SuggestionSection()}
-=======
-          {messages.map(({ id, msg, image }, index) => (
-            <Message
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${id}-${index}`}
-              you={id === myId()}
-              msg={msg}
-              id={id}
-              image={image}
-            />
-          ))}
-          <div>
->>>>>>> ea850d7 (prod):src/pages/buds/[id].tsx
             <Input
               value={typing}
               onChange={(val) => {
