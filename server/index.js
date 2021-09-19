@@ -7,7 +7,7 @@ const cors = require('cors');
 const twilio = require('twilio');
 const next = require('next');
 dotenv.config();
-const dev = process.env.NODE_ENV === 'production';
+const dev = process.env.NODE_ENV !== 'production';
 const nextapp = next({ dev });
 const handle = nextapp.getRequestHandler();
 

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "nodemon server",
+    "start": "node server",
     "export": "next export -o dist",
     "stage": "yarn build; yarn start",
     "type-check": "tsc"
