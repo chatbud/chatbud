@@ -31,7 +31,7 @@ const BudsPage: NextPage = () => {
       setMessages((msgs) => [...msgs, msg]);
     });
 
-    fetch(`http://localhost:5000/buds/${room}`).then((res) => {
+    fetch(`/buds/${room}`).then((res) => {
       res.json().then((data) => {
         setMessages(data.msgs);
         const members = data.users;

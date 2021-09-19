@@ -41,7 +41,7 @@ const UserDetails: NextPage = () => {
       body: JSON.stringify(input)
     };
 
-    fetch('http://localhost:5000/user/create', requestOptions).then(
+    fetch('/user/create', requestOptions).then(
       (response) => {
         if (!response.ok) {
           setError(true);
