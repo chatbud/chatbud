@@ -27,7 +27,7 @@ const db = {
     1: {
       name: "Kookie Kat",
       yearOfBirth: "3",
-      interests: ["cookies", "animal crossing", "python3.0"],
+      interests: ["coding", "dancing"],
       avatarSeed: "nami3",
       favInterest: "video games",
     },
@@ -52,34 +52,36 @@ const db = {
         {
           id: 1,
           name: "Devon",
-          image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+          avatarSeed: "devon",
+          interests: ["cooking", "coding"]
         },
         {
           id: 0,
           name: "Kookie Kat",
-          image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+          avatarSeed: "nami3",
+          interests: ["coding", "dancing"]
         },
       ],
       msgs: [
         {
           id: 0,
           msg: "Hey",
-          image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+          avatarSeed: "devon",
         },
         {
           id: 1,
           msg: "Hey",
-          image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+          avatarSeed: "nami3",
         },
         {
           id: 1,
           msg: "What's up",
-          image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+          avatarSeed: "nami3",
         },
         {
           id: 0,
           msg: "Not much hbu",
-          image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+          avatarSeed: "devon",
         },
       ],
     },
@@ -108,12 +110,12 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", (room) => {
     socket.join(room);
   });
-  socket.on("chat", ({ room, msg, id }) => {
-    io.to(room).emit("chat", { msg, id });
+  socket.on("chat", ({ room, msg, id, avatarSeed }) => {
+    io.to(room).emit("chat", { msg, id, avatarSeed });
     if (!db.buds[room]) {
       db.buds[room] = { msgs: [] };
     }
-    db.buds[room].msgs.push({ msg, id });
+    db.buds[room].msgs.push({ msg, id, avatarSeed });
   });
 });
 
@@ -128,6 +130,8 @@ const authenticate = (req, res, next) => {
 
 const generatePhoneCode = (phoneNumber) => {
   const code = Math.floor(Math.random() * 900000) + 100000;
+  console.log(`Sending code: ${code} to phone number: ${phoneNumber}`);
+
   twilioClient.messages.create({
     body: `Your ChatBud authentication code is ${code}`,
     from: twilioPhoneNumber,

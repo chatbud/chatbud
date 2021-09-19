@@ -1,19 +1,20 @@
-/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 import { io } from 'socket.io-client';
-
 import { useRouter } from 'next/dist/client/router';
+
 import Layout from '@/components/Layout';
 import Message from '@/components/Message';
-import { getUserId } from '@/utils/functions';
+import { getUserSeed } from '@/utils/functions';
 
 const BudsPage: NextPage = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [typing, setTyping] = useState('');
   const [chat, setChat] = useState<any>(null);
   const [other, setOther] = useState('...');
+  const [budInterests, setBudInterests] = useState([]);
+  const [myInterests, setMyInterests] = useState([]);
   const router = useRouter();
   const room = router.query.id;
 
@@ -34,14 +35,49 @@ const BudsPage: NextPage = () => {
       res.json().then((data) => {
         setMessages(data.msgs);
         const members = data.users;
-        if (members[0].id === Number(getUserId())) {
+        if (members[0].id === myId()) {
           setOther(members[1].name);
+          setBudInterests(members[1].interests);
+          setMyInterests(members[0].interests);
         } else {
           setOther(members[0].name);
+          setBudInterests(members[0].interests);
+          setMyInterests(members[1].interests);
         }
       });
     });
   }, [room]);
+
+  function buildSuggestions() {
+    const match = myInterests.filter((element) =>
+      budInterests.includes(element)
+    );
+    let suggestions = `${other} is interested in `;
+    if (match.length > 0) {
+      return (
+        <p>
+          You two are both interested in <strong>{match}</strong>!
+        </p>
+      );
+    }
+    if (budInterests.length === 1) {
+      suggestions += `${budInterests[0]}.`;
+    } else {
+      const copy = Array.from(budInterests);
+      const last = copy.pop();
+      suggestions += `${copy.join(', ')} and ${last}.`;
+    }
+    return <p>{suggestions}</p>;
+  }
+
+  const SuggestionSection = () => {
+    return (
+      <div css={[suggestionsStyle]} role="alert">
+        <strong className="font-bold">👋 Say hi to {other}!</strong>
+        <span css={[tw`block sm:inline`]}>{buildSuggestions()}</span>
+      </div>
+    );
+  };
 
   return (
     <Layout title={`Message with ${other}`}>
@@ -49,17 +85,18 @@ const BudsPage: NextPage = () => {
         <Title>{other} 🌱</Title>
         <Content>
           <Messages>
-            {messages.map(({ id, msg, image }, index) => (
+            {messages.map(({ id, msg, avatarSeed }, index) => (
               <Message
                 key={`${id}-${index}`}
-                you={id === Number(getUserId())}
+                you={id === myId()}
                 msg={msg}
                 id={id}
-                image={image}
+                image={getAvatarImage(avatarSeed)}
               />
             ))}
           </Messages>
           <InputContainer>
+            {SuggestionSection()}
             <Input
               value={typing}
               onChange={(val) => {
@@ -70,7 +107,8 @@ const BudsPage: NextPage = () => {
                   chat.emit('chat', {
                     room,
                     msg: typing,
-                    id: Number(getUserId())
+                    id: myId(),
+                    avatarSeed: getUserSeed()
                   });
                   setTyping('');
                 }
@@ -82,7 +120,7 @@ const BudsPage: NextPage = () => {
                 chat.emit('chat', {
                   room,
                   msg: typing,
-                  id: Number(getUserId())
+                  id: myId()
                 });
                 setTyping('');
               }}
@@ -97,8 +135,11 @@ const BudsPage: NextPage = () => {
   );
 };
 
+const suggestionsStyle = css`
+  ${tw`bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative`};
+`;
 const Button = styled.button`
-  ${tw`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+  ${tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded`}
 `;
 
 const Messages = styled.div`
@@ -106,7 +147,7 @@ const Messages = styled.div`
 `;
 
 const Input = styled.input`
-  ${tw`bg-gray-200 border-b-2 border-blue-500 focus:outline-none focus:bg-gray-100 focus:border-blue-700 text-gray-700 py-2 px-4 rounded w-full`}
+  ${tw`bg-gray-200 border-b-2 border-leaf focus:outline-none focus:bg-gray-100 focus:border-leaf-dark text-gray-700 py-2 px-4 rounded w-full`}
 `;
 
 const Container = styled.main`
@@ -114,7 +155,7 @@ const Container = styled.main`
 `;
 
 const InputContainer = styled.div`
-  ${tw`flex flex-row space-x-4 fixed left-0 bottom-0 right-0 w-full p-4 bg-white border-t`}
+  ${tw`flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 items-stretch fixed left-0 bottom-0 right-0 w-full p-4 bg-white border-t`}
 `;
 
 const Title = styled.h1`
@@ -124,5 +165,13 @@ const Title = styled.h1`
 const Content = styled.div`
   ${tw`flex flex-col pb-24`}
 `;
+
+function myId() {
+  return Number(window.localStorage.getItem('userId'));
+}
+
+function getAvatarImage(seed: string) {
+  return `https://avatars.dicebear.com/api/avataaars/${seed}.svg`;
+}
 
 export default BudsPage;
