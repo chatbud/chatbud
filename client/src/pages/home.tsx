@@ -16,9 +16,20 @@ const HomePage: NextPage = () => {
           <Plant progress={0.1} />
           <AsideRight>+25% growth since you&apos;ve started</AsideRight>
         </Content>
-        <Link href="/buds/1" passHref>
-          <Button>Find a Bud</Button>
-        </Link>
+        <Button
+          onClick={async () => {
+            const json = await (
+              await fetch('http://localhost:5000/matchmake', {
+                method: 'POST',
+                headers: { 'User-Id': window.localStorage.getItem('userId')! }
+              })
+            ).json();
+
+            window.location.pathname = `/buds/${json.id}`;
+          }}
+        >
+          Find a Bud
+        </Button>
       </Container>
     </Layout>
   );
