@@ -50,7 +50,7 @@ const BudsPage: NextPage = (props) => {
           {messages.map(({ id, msg, image }, index) => (
             <Message
               key={`${id}-${index}`}
-              you={id === Number(window.localStorage.getItem('userId'))}
+              you={id === myId()}
               msg={msg}
               id={id}
               image={image}
@@ -79,7 +79,7 @@ const BudsPage: NextPage = (props) => {
                 chat.emit('chat', {
                   room,
                   msg: typing,
-                  id: Number(window.localStorage.getItem('userId'))
+                  id: myId()
                 });
                 setTyping('');
               }}
@@ -114,7 +114,7 @@ const Content = styled.div`
 `;
 
 function myId() {
-  return Number(window.localStorage.getItem('userId'));
+  return myId();
 }
 
 export default BudsPage;
