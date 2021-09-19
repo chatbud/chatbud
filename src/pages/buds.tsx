@@ -10,7 +10,7 @@ const BudsPage: NextPage = () => {
   useEffect(() => {
     const fn = async () => {
       const json = await (
-        await fetch('http://localhost:5000/buds', {
+        await fetch('/buds', {
           headers: { 'User-Id': window.localStorage.getItem('userId')! }
         })
       ).json();

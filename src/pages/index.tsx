@@ -46,7 +46,7 @@ const IndexPage: NextPage = () => {
     if (!render2FA) {
       setValidationMessage(phoneNumber.length ? '' : 'Enter a phone number');
       if (phoneNumber.length) {
-        const res = await fetch('http://localhost:5000/login', {
+        const res = await fetch('/login', {
           method: 'POST',
           body: JSON.stringify({ phone_number: phoneNumber }),
           headers: { 'Content-Type': 'application/json' }
@@ -64,7 +64,7 @@ const IndexPage: NextPage = () => {
         return;
       }
 
-      const res = await fetch('http://localhost:5000/login/2fa', {
+      const res = await fetch('/login/2fa', {
         method: 'POST',
         body: JSON.stringify({
           phone_number: phoneNumber,
