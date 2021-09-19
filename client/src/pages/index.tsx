@@ -92,7 +92,7 @@ const IndexPage: NextPage = () => {
           <ImageContainer>
             <Image src={logoSrc} />
           </ImageContainer>
-          <Subtitle>Growing your network, one bud at a time</Subtitle>
+          <Subtitle>Reduce social anxiety, one bud at a time</Subtitle>
           <button
             type="button"
             css={[

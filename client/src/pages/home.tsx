@@ -1,12 +1,13 @@
 import React from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
-import Link from 'next/link';
 
 import Layout from '@/components/Layout';
 import Plant from '@/components/Plant';
 
 const HomePage: NextPage = () => {
+  const router = useRouter();
   return (
     <Layout title="Home">
       <Container>
@@ -24,8 +25,7 @@ const HomePage: NextPage = () => {
                 headers: { 'User-Id': window.localStorage.getItem('userId')! }
               })
             ).json();
-
-            window.location.pathname = `/buds/${json.id}`;
+            router.push(`/buds/${json.id}`);
           }}
         >
           Find a Bud
