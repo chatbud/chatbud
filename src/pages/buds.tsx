@@ -19,6 +19,7 @@ const BudsPage: NextPage = () => {
     };
     fn();
   }, []);
+  console.log(buds);
   return (
     <Layout title="Buds">
       <Container>

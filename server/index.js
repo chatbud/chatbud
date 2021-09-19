@@ -29,74 +29,74 @@ const twilioClient = twilio(twilioSID, twilioToken);
 const phoneCodes = {};
 const db = {
   users: {
-    // 0: {
-    //   name: 'Devon',
-    //   yearOfBirth: '3',
-    //   interests: ['cookies', 'python3.0'],
-    //   avatarSeed: 'devon',
-    //   favInterest: 'tech'
-    // },
-    // 1: {
-    //   name: 'Kookie Kat',
-    //   yearOfBirth: '3',
-    //   interests: ['coding', 'dancing'],
-    //   avatarSeed: 'nami3',
-    //   favInterest: 'video games'
-    // },
-    // 2: {
-    //   name: 'Vinh T',
-    //   yearOfBirth: '3',
-    //   interests: ['lunch'],
-    //   avatarSeed: 'vinh',
-    //   favInterest: 'tech'
-    // },
-    // 3: {
-    //   name: 'Deen',
-    //   yearOfBirth: '3',
-    //   interests: ['tech', 'python3.0'],
-    //   avatarSeed: 'd',
-    //   favInterest: 'beauty'
-    // }
+    0: {
+      name: 'Devon',
+      yearOfBirth: '3',
+      interests: ['cookies', 'python3.0'],
+      avatarSeed: 'devon',
+      favInterest: 'tech'
+    },
+    1: {
+      name: 'Kookie Kat',
+      yearOfBirth: '3',
+      interests: ['coding', 'dancing'],
+      avatarSeed: 'nami3',
+      favInterest: 'video games'
+    },
+    2: {
+      name: 'Vinh T',
+      yearOfBirth: '3',
+      interests: ['lunch'],
+      avatarSeed: 'vinh',
+      favInterest: 'tech'
+    },
+    3: {
+      name: 'Deen',
+      yearOfBirth: '3',
+      interests: ['tech', 'python3.0'],
+      avatarSeed: 'd',
+      favInterest: 'beauty'
+    }
   },
   buds: {
-    // 1: {
-    //   users: [
-    //     {
-    //       id: 1,
-    //       name: 'Devon',
-    //       avatarSeed: 'devon',
-    //       interests: ['cooking', 'coding']
-    //     },
-    //     {
-    //       id: 0,
-    //       name: 'Kookie Kat',
-    //       avatarSeed: 'nami3',
-    //       interests: ['coding', 'dancing']
-    //     }
-    //   ],
-    //   msgs: [
-    //     {
-    //       id: 0,
-    //       msg: 'Hey',
-    //       avatarSeed: 'devon'
-    //     },
-    //     {
-    //       id: 1,
-    //       msg: 'Hey',
-    //       avatarSeed: 'nami3'
-    //     },
-    //     {
-    //       id: 1,
-    //       msg: "What's up",
-    //       avatarSeed: 'nami3'
-    //     },
-    //     {
-    //       id: 0,
-    //       msg: 'Not much hbu',
-    //       avatarSeed: 'devon'
-    //     }
-    //   ]
-    // }
+    1: {
+      users: [
+        {
+          id: 1,
+          name: 'Devon',
+          avatarSeed: 'devon',
+          interests: ['cooking', 'coding']
+        },
+        {
+          id: 0,
+          name: 'Kookie Kat',
+          avatarSeed: 'nami3',
+          interests: ['coding', 'dancing']
+        }
+      ],
+      msgs: [
+        {
+          id: 0,
+          msg: 'Hey',
+          avatarSeed: 'devon'
+        },
+        {
+          id: 1,
+          msg: 'Hey',
+          avatarSeed: 'nami3'
+        },
+        {
+          id: 1,
+          msg: "What's up",
+          avatarSeed: 'nami3'
+        },
+        {
+          id: 0,
+          msg: 'Not much hbu',
+          avatarSeed: 'devon'
+        }
+      ]
+    }
   }
 };
 
