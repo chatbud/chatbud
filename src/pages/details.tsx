@@ -41,15 +41,17 @@ const UserDetails: NextPage = () => {
       body: JSON.stringify(input)
     };
 
-    fetch('/user/create', requestOptions).then((response) => {
-      if (!response.ok) {
-        setError(true);
-      } else {
-        setUserSeed(input.avatarSeed);
-        response.json().then((data) => setUserId(data.id));
-        router.push('/home');
+    fetch('/user/create', requestOptions).then(
+      (response) => {
+        if (!response.ok) {
+          setError(true);
+        } else {
+          setUserSeed(input.avatarSeed);
+          response.json().then((data) => setUserId(data.id));
+          router.push('/home');
+        }
       }
-    });
+    );
   };
 
   const errorBanner = error && (
@@ -99,16 +101,7 @@ const UserDetails: NextPage = () => {
               textAlign: 'center'
             }}
           >
-            <button
-              type="button"
-              css={[
-                tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded mt-3`,
-                btnStyles
-              ]}
-              onClick={saveProfile}
-            >
-              Click the icon to randomize an avatar
-            </button>
+            Click the icon to randomize an avatar
           </p>
           <form>
             <div>
@@ -149,7 +142,10 @@ const UserDetails: NextPage = () => {
             />
             <button
               type="button"
-              css={[tw`border`, btnStyles]}
+              css={[
+                tw`bg-leaf hover:bg-leaf-dark text-white font-bold py-2 px-4 rounded mt-3`,
+                btnStyles
+              ]}
               onClick={saveProfile}
             >
               Save
