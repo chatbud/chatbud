@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
 
 import Layout from '@/components/Layout';
 import BudCard from '@/components/BudCard';
 
-const mockData = [
-  { id: '1', name: 'Kooky Kat', image: '/mockdata.jpg' },
-  { id: '2', name: 'Deen Haque' },
-  { id: '3', name: 'Omegalul', image: '/mockdata.jpg' },
-  { id: '4', name: 'the mackeral', image: '/mockdata.jpg' }
-];
-
 const BudsPage: NextPage = () => {
-  const [buds, setBuds] = useState(mockData);
+  const [buds, setBuds] = useState([]);
+  useEffect(() => {
+    const fn = async () => {
+      const json = await (
+        await fetch('http://localhost:5000/buds', {
+          headers: { 'User-Id': window.localStorage.getItem('userId')! }
+        })
+      ).json();
+
+      setBuds(json);
+    };
+    fn();
+  }, []);
   return (
     <Layout title="Buds">
       <Container>

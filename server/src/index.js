@@ -8,30 +8,52 @@ import cors from "cors";
 // database
 const phoneCodes = {};
 const db = {
-  users: {},
-  convos: {
-    1: [
-      {
-        id: 1,
-        msg: "Hey",
-        image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
-      },
-      {
-        id: 2,
-        msg: "Hey",
-        image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
-      },
-      {
-        id: 2,
-        msg: "What's up",
-        image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
-      },
-      {
-        id: 1,
-        msg: "Not much hbu",
-        image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
-      },
-    ],
+  users: {
+    1: { name: "Devon", yearOfBirth: "3", interests: [], avatarSeed: "devon" },
+    0: {
+      name: "Kookie Kat",
+      yearOfBirth: "3",
+      interests: [],
+      avatarSeed: "nami3",
+    },
+  },
+  buds: {
+    1: {
+      users: [
+        {
+          id: 1,
+          name: "Devon",
+          image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+        },
+        {
+          id: 0,
+          name: "Kookie Kat",
+          image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+        },
+      ],
+      msgs: [
+        {
+          id: 0,
+          msg: "Hey",
+          image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+        },
+        {
+          id: 1,
+          msg: "Hey",
+          image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+        },
+        {
+          id: 1,
+          msg: "What's up",
+          image: "https://avatars.dicebear.com/api/avataaars/nami3.svg",
+        },
+        {
+          id: 0,
+          msg: "Not much hbu",
+          image: "https://avatars.dicebear.com/api/avataaars/devon.svg",
+        },
+      ],
+    },
   },
 };
 
@@ -62,16 +84,16 @@ io.on("connection", (socket) => {
   });
   socket.on("chat", ({ room, msg, id }) => {
     io.to(room).emit("chat", { msg, id });
-    if (!db.convos[room]) {
-      db.convos[room] = [];
+    if (!db.buds[room]) {
+      db.buds[room] = { msgs: [] };
     }
-    db.convos[room].push({ msg, id });
+    db.buds[room].msgs.push({ msg, id });
   });
 });
 
 const authenticate = (req, res, next) => {
   // check headers for id
-  if (!db.users.hasOwnProperty(req.header("User-Id"))) {
+  if (!db.users.hasOwnProperty(Number(req.header("User-Id")))) {
     res.sendStatus(401);
   } else {
     next();
@@ -170,13 +192,32 @@ app.get("/user", authenticate, (req, res) => {});
 /**
  * Route to get a list of user's buds
  */
-app.get("/buds", authenticate, (req, res) => {});
+app.get("/buds", authenticate, (req, res) => {
+  const uid = Number(req.header("User-Id"));
+  const buds = [];
+  for (const bud in db.buds) {
+    const convo = db.buds[bud];
+    if (convo.users.some((user) => user.id === uid)) {
+      const users = convo.users;
+      let b = {};
+
+      if (users[0].id === uid) {
+        b = users[1];
+      } else {
+        b = users[0];
+      }
+      b.id = bud;
+      buds.push(b);
+    }
+  }
+  res.status(200).json(buds);
+});
 
 /**
  * Route to get details for a user's specific bud
  */
 app.get("/buds/:id", (req, res) => {
-  res.json(db.convos[req.params.id]);
+  res.json(db.buds[req.params.id]);
 });
 
 server.listen(process.env.PORT, () => {
