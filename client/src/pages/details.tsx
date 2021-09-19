@@ -1,10 +1,12 @@
-import Layout from '@/components/Layout';
 import React, { useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+
+import Layout from '@/components/Layout';
+import { setUserId, setUserSeed } from '@/utils/functions';
 
 interface ProfileInput {
   name: string;
@@ -42,6 +44,8 @@ const UserDetails: NextPage = () => {
         if (!response.ok) {
           setError(true);
         } else {
+          setUserSeed(input.avatarSeed);
+          response.json().then((data) => setUserId(data.id));
           router.push('/home');
         }
       }
