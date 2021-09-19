@@ -1,16 +1,15 @@
 import React, { useState, useEffect, HTMLInputEvent } from 'react';
-import tw, { styled, TwStyle } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import Modal from 'react-modal';
 import { NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import Layout from '@/components/Layout';
-import seeds from '@/assets/seeds.jpg';
+import { getUserId, setUserId } from '@/utils/functions';
+import logoSrc from '@/assets/chatbud_logo.png';
 
 const IndexPage: NextPage = () => {
-  const [userId, setUserId] = useState('');
-
   const [isAuthed, setIsAuthed] = useState(false);
 
   const [renderLogin, setRenderLogin] = useState(false);
@@ -20,66 +19,74 @@ const IndexPage: NextPage = () => {
   const [twoFactorCode, setTwoFactorCode] = useState('');
 
   const [validationMessage, setValidationMessage] = useState('');
-  const Router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
-    const uid = window.localStorage.getItem('userId');
+    const uid = getUserId();
     if (uid) {
       setUserId(uid);
-      Router.push('/home');
       setIsAuthed(true);
     }
   }, []);
 
   useEffect(() => {
-    // Replace w/ Twilio api auth call
-    const validId = 'Developer at Shopify';
-    if (!isAuthed) setIsAuthed(userId === validId);
-  }, [userId]);
-
-  useEffect(() => {
-    if (isAuthed) Router.push('/home');
+    if (isAuthed) {
+      router.push('/home');
+    }
   }, [isAuthed]);
 
   const onPhoneInput = (value: string) => {
-    if (/^(\d|-| |\+|^$){0,15}$/.test(value)) setPhoneNumber(value);
-  };
-
-  const authenticateUser = () => {
-    // Replace w/ BE call
-    const validCode = 'vihng';
-    const isAuthorized = twoFactorCode === validCode;
-
-    setValidationMessage(isAuthorized ? '' : 'Invalid code! Try again');
-    if (isAuthorized) {
-      window.localStorage.setItem('userId', '1');
-      setIsAuthed(true);
+    if (/^(\d|-| |\+|^$){0,15}$/.test(value)) {
+      setPhoneNumber(value);
     }
   };
 
-  const onJoinPress = () => {
+  const onJoinPress = async () => {
     if (!render2FA) {
       setValidationMessage(phoneNumber.length ? '' : 'Enter a phone number');
       if (phoneNumber.length) {
-        // NOTE: Maybe only set this to true when Twilio lets us know it's a valid phone #?
-        // NOTE: We could have a loading phase
-        setRender2FA(true);
+        const res = await fetch('http://localhost:5000/login', {
+          method: 'POST',
+          body: JSON.stringify({ phone_number: phoneNumber }),
+          headers: { 'Content-Type': 'application/json' }
+        }).then((r) => r.json());
+        const validPhone = res.next_step === 'code';
+        if (validPhone) {
+          setRender2FA(true);
+        } else {
+          setValidationMessage('Bad phone number');
+        }
       }
     } else {
-      if (twoFactorCode.length) {
-        authenticateUser();
+      if (!twoFactorCode.length) {
+        setValidationMessage('Please enter the code sent to your phone');
         return;
       }
-      setValidationMessage('Enter the code sent to your phone');
+
+      const res = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          phone_number: phoneNumber,
+          code: twoFactorCode
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      }).then((r) => r.json());
+
+      if (res.redirect) {
+        router.push(res.redirect);
+      } else {
+        setValidationMessage('Invalid code. Please check your phone.');
+      }
     }
   };
 
   return (
     <Layout title="ChatBud - Grow with friends!" noNavbar={!isAuthed}>
       <Container>
-        <Title>ChatBud</Title>
-        Yeah we make friends n shit
-        <Image src={seeds} />
+        <Title>
+          <Image src={logoSrc} />
+        </Title>
+        <Subtitle>Growing your network, one bud at a time</Subtitle>
         <Modal
           isOpen={renderLogin}
           onRequestClose={() => setRenderLogin(false)}
@@ -145,21 +152,16 @@ const StyledButton = styled.button`
 `;
 
 const Container = styled.div`
-  ${tw`absolute inset-0 w-full h-screen flex flex-col justify-center items-center`}/* background-color: black; */
+  ${tw`flex flex-col items-center space-y-4`}
 `;
 
 const Title = styled.h1`
-  ${tw`text-4xl sm:text-5xl font-semibold tracking-wide mb-12`}
+  ${tw`px-12 py-4 max-w-md mt-8`}
 `;
 
-const linkStyles: Record<string, TwStyle> = {
-  red: tw`text-red-500 hover:text-red-700`,
-  yellow: tw`text-yellow-500 hover:text-yellow-700`,
-  green: tw`text-green-500 hover:text-green-700`,
-  blue: tw`text-blue-500 hover:text-blue-700`,
-  indigo: tw`text-indigo-500 hover:text-indigo-700`,
-  purple: tw`text-purple-500 hover:text-purple-700`
-};
+const Subtitle = styled.h2`
+  ${tw`text-base tracking-wide text-gray-700`}
+`;
 
 const StyledInput = styled.input`
   border: 1px solid green;
