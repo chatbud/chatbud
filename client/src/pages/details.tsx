@@ -72,7 +72,7 @@ const UserDetails: NextPage = () => {
   };
 
   return (
-    <Layout title="Details">
+    <Layout title="Details" noNavbar>
       <Title style={{ textAlign: 'center' }}>Profile</Title>
       <Card>
         {errorBanner}

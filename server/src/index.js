@@ -113,6 +113,7 @@ const generatePhoneCode = (phoneNumber) => {
     from: twilioPhoneNumber,
     to: phoneNumber
   });
+  console.log(`Sending code: ${code} to phone number: ${phoneNumber}`);
   phoneCodes[phoneNumber] = code.toString();
 };
 
