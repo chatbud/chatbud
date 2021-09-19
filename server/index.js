@@ -4,7 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const twilio = require('twilio');
-const fetch = import('node-fetch');
+const fetch = require('node-fetch');
 const next = require('next');
 
 dotenv.config();
@@ -220,7 +220,7 @@ nextapp.prepare().then(() => {
       avatarSeed: req.body.avatarSeed
     };
 
-    const results = categorize(interests[0]).then((traits) => {
+    const results = categorize(req.body.interests[0]).then((traits) => {
       user.favInterest = traits.prediction.topIntent;
     });
 
