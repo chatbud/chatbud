@@ -18,7 +18,7 @@ const HomePage: NextPage = () => {
           <Image width={140} height={300} src={PlantSrc1} alt="Plant" />
           <Aside>+90% growth since yesterday!</Aside>
         </Content>
-        <Link href="/" passHref>
+        <Link href="/buds/1" passHref>
           <Button>Find a Bud</Button>
         </Link>
       </Container>

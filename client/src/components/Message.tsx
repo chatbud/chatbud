@@ -4,19 +4,19 @@ import Link from 'next/link';
 
 interface MessageProps {
   msg: string;
-  name: string;
+  id: string;
   image: string;
   you: boolean;
 }
 
-const Message: React.FC<MessageProps> = ({ msg, name, image, you }) => {
+const Message: React.FC<MessageProps> = ({ msg, id, image, you }) => {
   const MsgContainer = you ? YouContainer : Container;
   return (
     <MsgContainer>
       {image ? (
         <Image src={image} alt="profile photo" />
       ) : (
-        <NoImage>{name.charAt(0)}</NoImage>
+        <NoImage>{id}</NoImage>
       )}
       <Name you={you}>{msg}</Name>
     </MsgContainer>

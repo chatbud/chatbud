@@ -23,7 +23,12 @@ const IndexPage: NextPage = () => {
   const Router = useRouter();
 
   useEffect(() => {
-    setUserId(userId || window.localStorage.getItem('userId'));
+    const uid = window.localStorage.getItem('userId');
+    if (uid) {
+      setUserId(uid);
+      Router.push('/home');
+      setIsAuthed(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -47,6 +52,7 @@ const IndexPage: NextPage = () => {
 
     setValidationMessage(isAuthorized ? '' : 'Invalid code! Try again');
     if (isAuthorized) {
+      window.localStorage.setItem('userId', '1');
       setIsAuthed(true);
     }
   };

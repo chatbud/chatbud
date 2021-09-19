@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import tw, { styled } from 'twin.macro';
 
@@ -8,35 +8,17 @@ import { io } from 'socket.io-client';
 import { useRouter } from 'next/dist/client/router';
 import Message from '@/components/Message';
 
-const mockData = [
-  {
-    name: 'Kooky Kat',
-    msg: 'Hey',
-    image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
-  },
-  {
-    name: 'Dev',
-    msg: 'Hey',
-    image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
-  },
-  {
-    name: 'Dev',
-    msg: "What's up",
-    image: 'https://avatars.dicebear.com/api/avataaars/nami3.svg'
-  },
-  {
-    name: 'Kooky Kat',
-    msg: 'Not much hbu',
-    image: 'https://avatars.dicebear.com/api/avataaars/devon.svg'
-  }
-];
-
 const BudsPage: NextPage = (props) => {
-  const [messages, setMessages] = useState(mockData);
+  const [messages, setMessages] = useState<any[]>([]);
   const [typing, setTyping] = useState('');
   const [chat, setChat] = useState<any>(null);
   const router = useRouter();
   const room = router.query.id;
+
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  }, [messages]);
+
   useEffect(() => {
     if (!room) return;
     const socket = io('http://localhost:5000');
@@ -46,6 +28,12 @@ const BudsPage: NextPage = (props) => {
     socket.on('chat', (msg) => {
       setMessages((msgs) => [...msgs, msg]);
     });
+
+    fetch(`http://localhost:5000/buds/${room}`).then((res) => {
+      res.json().then((data) => {
+        setMessages(data);
+      });
+    });
   }, [room]);
 
   return (
@@ -53,12 +41,12 @@ const BudsPage: NextPage = (props) => {
       <Container>
         <Title>Kooky Kat 🌱</Title>
         <Content>
-          {messages.map(({ name, msg, image }, id) => (
+          {messages.map(({ id, msg, image }, index) => (
             <Message
-              key={`${name}-${id}`}
-              you={name === 'Dev'}
+              key={`${id}-${index}`}
+              you={id === Number(window.localStorage.getItem('userId'))}
               msg={msg}
-              name={name}
+              id={id}
               image={image}
             />
           ))}
@@ -72,8 +60,12 @@ const BudsPage: NextPage = (props) => {
             <Button
               disabled={!typing}
               onClick={() => {
-                console.log(typing);
-                chat.emit('chat', { room, msg: typing, name: 'Dev' });
+                chat.emit('chat', {
+                  room,
+                  msg: typing,
+                  id: Number(window.localStorage.getItem('userId'))
+                });
+                setTyping('');
               }}
               type="button"
             >
@@ -94,7 +86,7 @@ const Input = styled.input`
   ${tw`bg-gray-200 border-gray-200 border-b-2 border-blue-500 focus:border-blue-700 focus:outline-none focus:bg-white focus:border-blue-700 text-gray-700 py-2 px-4 rounded`}
 `;
 const Container = styled.main`
-  ${tw`flex flex-col space-y-4 p-4`}
+  ${tw`flex flex-col space-y-4 p-4 overflow-y-scroll`}
 `;
 
 const Title = styled.h1`
