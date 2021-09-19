@@ -121,20 +121,22 @@ const generatePhoneCode = (phoneNumber) => {
  * First sign-in will generate a code
  */
 app.post("/login", (req, res) => {
-  const { phone_number, code } = req.body;
+  const { phone_number } = req.body;
   if (!phone_number) {
     res.status(400).send('Missing phone number');
     return;
   }
 
-  // generate code if no entry exists
-  if (!phoneCodes.hasOwnProperty(phone_number)) {
-    // twilio api call
-    generatePhoneCode(phone_number);
-    res.status(200).json({ next_step: 'code' });
-    return;
-  }
+  // twilio api call
+  generatePhoneCode(phone_number);
+  res.status(200).json({ next_step: 'code' });
+});
 
+/**
+ * 2fa Route
+ */
+app.post('/login/2fa', (req, res) => {
+  const { phone_number, code } = req.body;
   if (!code) {
     res.status(400).send('Missing code');
     return;

@@ -63,7 +63,7 @@ const IndexPage: NextPage = () => {
         return;
       }
 
-      const res = await fetch('http://localhost:5000/login', {
+      const res = await fetch('http://localhost:5000/login/2fa', {
         method: 'POST',
         body: JSON.stringify({
           phone_number: phoneNumber,
