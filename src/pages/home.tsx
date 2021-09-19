@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 
 import Layout from '@/components/Layout';
 import Plant from '@/components/Plant';
+import { getUserId } from '@/utils/functions';
 
 const HomePage: NextPage = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    if (!getUserId()) router.push('/');
+  }, []);
+
   return (
     <Layout title="Home">
       <Container>
