@@ -30,6 +30,7 @@ const BudsPage: NextPage = () => {
               id={bud.id}
               name={bud.name}
               image={bud.image}
+              lastMessage={bud.lastMessage}
             />
           ))}
         </Content>

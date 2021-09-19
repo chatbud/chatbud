@@ -207,6 +207,7 @@ app.get("/buds", authenticate, (req, res) => {
         b = users[0];
       }
       b.id = bud;
+      b.lastMessage = convo.msgs[convo.msgs.length - 1].msg;
       buds.push(b);
     }
   }
